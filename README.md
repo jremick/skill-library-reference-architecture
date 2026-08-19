@@ -3,11 +3,12 @@
 A tool-agnostic reference architecture for AI skill libraries that need to grow
 without loading every capability into every model context.
 
-> **Pre-public candidate:** the repository is being validated privately. It is
-> not released, its schemas and CLI may change, and no package is published.
+> **Public alpha:** this repository is available for inspection and trial use.
+> Its schemas and CLI may change; no release, tag, or package is published.
 
+[![Validate](https://github.com/jremick/skill-library-reference-architecture/actions/workflows/validate.yml/badge.svg?branch=main)](https://github.com/jremick/skill-library-reference-architecture/actions/workflows/validate.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Status: pre-public](https://img.shields.io/badge/status-pre--public-lightgrey.svg)](#current-status)
+[![Status: public alpha](https://img.shields.io/badge/status-public%20alpha-yellow.svg)](#current-status)
 
 ## What this is
 
@@ -103,7 +104,7 @@ a passing result.
 
 ## Current status
 
-The intended first public state is **public alpha** for inspection and trial use.
+This repository is in **public alpha** for inspection and trial use.
 The following are expected to change before beta:
 
 - Schema fields and compatibility rules.
