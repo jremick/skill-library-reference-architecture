@@ -1,0 +1,44 @@
+$schema: urn:skillref:schema:skill-manifest:0.1
+schemaVersion: "0.1"
+id: deployment-runner
+version: 1.0.0
+name: Deployment runner
+description: Represent a governed mutating capability for denial, transition, drift, and rollback conformance tests.
+license: Apache-2.0
+domains:
+  - software-delivery
+triggers:
+  include:
+    - Execute an approved deployment with a pinned bundle, policy, verification, and rollback plan.
+  exclude:
+    - Do not use under a read-only, stale, drifted, unresolved, or unapproved context.
+risk:
+  level: high
+  sideEffects: true
+  rationale: May mutate an external target and requires strict policy and lifecycle controls.
+permissions:
+  capabilities:
+    - deployment:execute
+    - system:write
+  resourceScopes:
+    - synthetic:deployment-target
+resources:
+  entrypoint: SKILL.md
+  items: []
+conflicts:
+  hard: []
+  supersedes: []
+  companions: []
+evaluation:
+  suiteRefs:
+    - evals/development/cases.json
+    - evals/heldout/cases.json
+compatibility:
+  spec: agent-skills
+  runtimes:
+    - portable-core
+  notes: Skill text cannot override a deterministic policy denial.
+provenance:
+  source: synthetic:deployment-runner-governed
+  maintainers:
+    - reference-architecture-maintainers

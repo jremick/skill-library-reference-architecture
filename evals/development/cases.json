@@ -1,0 +1,91 @@
+{
+  "schema_version": "0.1.0",
+  "suite_id": "synthetic-development-v1",
+  "purpose": "Tuning-visible synthetic cases for Levels 0 through 3.",
+  "thresholds": {
+    "exposure_correctness": 1.0,
+    "false_activation_rate": 0.0,
+    "hit_at_k": 1.0,
+    "permission_denied_correctness": 1.0,
+    "rejection_correctness": 1.0,
+    "top_1_accuracy": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "dev-l0-exact-document",
+      "level": 0,
+      "intent_label": "document-summary",
+      "synthetic_prompt": "Summarize the synthetic document brief.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": ["document-summary"],
+      "must_not_skill_ids": ["deployment-runner"],
+      "expected_decision": "select",
+      "expected_exposure": "prompt_visible",
+      "tags": ["exact", "baseline"],
+      "rationale": "A small flat library may expose this low-risk skill directly."
+    },
+    {
+      "case_id": "dev-l1-domain-route",
+      "level": 1,
+      "intent_label": "table-analysis",
+      "synthetic_prompt": "Find the largest change in the sample sales table.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": ["table-analysis"],
+      "must_not_skill_ids": ["document-summary"],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["static-router", "domain"],
+      "rationale": "The data router should select the exact analysis leaf."
+    },
+    {
+      "case_id": "dev-l2-filter-before-search",
+      "level": 2,
+      "intent_label": "safe-deployment-guidance",
+      "synthetic_prompt": "Explain how a deployment would be checked without changing anything.",
+      "profile_id": "read-only",
+      "expected_skill_ids": ["deployment-review"],
+      "must_not_skill_ids": ["deployment-runner"],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["retrieval", "permission", "must-not"],
+      "rationale": "A mutating skill must be removed before retrieval and ranking."
+    },
+    {
+      "case_id": "dev-l2-chart-routing",
+      "level": 2,
+      "intent_label": "table-analysis-chart",
+      "synthetic_prompt": "Analyze the sample table and include a chart.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": ["table-analysis"],
+      "must_not_skill_ids": [],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["retrieval", "chart-intent"],
+      "rationale": "The routing evaluator asserts selection and exposure only; resource loading requires host lifecycle evidence."
+    },
+    {
+      "case_id": "dev-l3-unrelated-rejection",
+      "level": 3,
+      "intent_label": "unrelated-rejection",
+      "synthetic_prompt": "Transcribe a fictional audio recording into speaker-labelled notes.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": ["table-analysis"],
+      "expected_decision": "reject",
+      "tags": ["near-miss", "rejection", "fail-closed"],
+      "rationale": "A request with no eligible matching skill must return no routing candidate."
+    },
+    {
+      "case_id": "dev-l3-profile-denial",
+      "level": 3,
+      "intent_label": "profile-denial",
+      "synthetic_prompt": "Analyze this governed synthetic table.",
+      "profile_id": "drifted-profile",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": ["deployment-runner"],
+      "expected_decision": "reject",
+      "tags": ["profile", "permission", "rejection", "fail-closed"],
+      "rationale": "The fail-closed profile grants no exposure, so an otherwise matching skill cannot be selected."
+    }
+  ]
+}

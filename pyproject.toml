@@ -1,0 +1,57 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "skill-library-reference-architecture"
+version = "0.1.0a1"
+description = "A tool-agnostic reference architecture for scalable AI skill libraries."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{ name = "Jarel Remick" }]
+keywords = [
+  "agent-skills",
+  "ai-agents",
+  "context-engineering",
+  "progressive-disclosure",
+  "tool-retrieval",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+  "jsonschema>=4.25,<5",
+  "PyYAML>=6.0.3,<7",
+]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.14,<1",
+]
+
+[project.urls]
+Repository = "https://github.com/jremick/skill-library-reference-architecture"
+Issues = "https://github.com/jremick/skill-library-reference-architecture/issues"
+
+[project.scripts]
+skillref = "skillref.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/skillref"]
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

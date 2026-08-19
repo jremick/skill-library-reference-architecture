@@ -1,0 +1,52 @@
+$schema: urn:skillref:schema:router-map:0.1
+schemaVersion: "0.1"
+id: level-1-static-router
+version: 1.0.0
+sourceRegistryDigest:
+  algorithm: sha256
+  value: b3d0cf73f1435dbe159f0854c233857bcfec6b36b829c23cb9af9bc0dad28b89
+policy:
+  filterBeforeRanking: true
+  denialsOverrideGrants: true
+  ambiguityAction: clarify
+retrieval:
+  enabled: false
+  mode: none
+  candidateLimit: 2
+  inspectLimit: 1
+  fallback: static-router
+routers:
+  - id: engineering-router
+    domain: software-engineering
+    skills:
+      - code-review
+    strategy: static
+    exactAliases:
+      - phrase: review this patch
+        skillId: code-review
+    keywordRules:
+      - terms:
+          - review
+          - patch
+        match: all
+        skillId: code-review
+        weight: 1.0
+    fallback:
+      action: clarify
+  - id: data-router
+    domain: data-analysis
+    skills:
+      - table-analysis
+    strategy: static
+    exactAliases:
+      - phrase: analyze this table
+        skillId: table-analysis
+    keywordRules:
+      - terms:
+          - table
+          - analyze
+        match: any
+        skillId: table-analysis
+        weight: 0.8
+    fallback:
+      action: clarify

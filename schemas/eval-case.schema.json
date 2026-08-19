@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:skillref:schema:eval-case:0.1",
+  "title": "Deterministic skill routing evaluation case",
+  "description": "Synthetic input with expected selection, rejection, exposure, and policy-exclusion assertions. Behavioral outcome and runtime lifecycle assertions require a separate host evaluator.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "case_id",
+    "synthetic_prompt",
+    "profile_id",
+    "expected_skill_ids",
+    "must_not_skill_ids",
+    "tags"
+  ],
+  "properties": {
+    "case_id": { "$ref": "#/$defs/objectId" },
+    "level": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "intent_label": { "$ref": "#/$defs/objectId" },
+    "synthetic_prompt": { "type": "string", "minLength": 3, "maxLength": 4000 },
+    "profile_id": { "$ref": "#/$defs/objectId" },
+    "expected_skill_ids": { "$ref": "#/$defs/skillIdArray" },
+    "must_not_skill_ids": { "$ref": "#/$defs/skillIdArray" },
+    "expected_decision": {
+      "enum": ["select", "reject"],
+      "description": "The deterministic routing decision asserted by this case."
+    },
+    "expected_exposure": {
+      "enum": ["prompt_visible", "router_retrievable"],
+      "description": "Compiled exposure that every expected skill must have before routing. This does not assert inspection, activation, execution, or resource loading."
+    },
+    "expected_stage": {
+      "const": "rejected",
+      "deprecated": true,
+      "description": "Legacy rejection marker retained only so immutable historical candidate evidence remains readable. New cases use expected_decision."
+    },
+    "expected_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["denied_skill_ids", "reason"],
+      "properties": {
+        "denied_skill_ids": { "$ref": "#/$defs/skillIdArray" },
+        "filter_before_ranking": { "const": true },
+        "reason": { "type": "string", "minLength": 3, "maxLength": 1000 }
+      },
+      "description": "Optional assertion that named source-registered skills are absent from every rankable, routed, and exposed bundle surface under the selected profile."
+    },
+    "expected_resource_behavior": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["load_condition", "resource_path"],
+      "properties": {
+        "load_condition": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "resource_path": { "type": "string", "minLength": 1, "maxLength": 2048 }
+      },
+      "description": "Host-evaluator expectation accepted for candidate portability but reported unsupported by the deterministic routing evaluator."
+    },
+    "verification_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/objectId" },
+      "description": "Host-evaluator evidence references accepted for portability but not resolved by the deterministic routing evaluator."
+    },
+    "tags": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/objectId" }
+    },
+    "rationale": { "type": "string", "minLength": 10, "maxLength": 1000 },
+    "k": { "type": "integer", "minimum": 1, "maximum": 100 }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "expected_decision": { "const": "select" } },
+        "required": ["expected_decision"]
+      },
+      "then": {
+        "required": ["expected_exposure"],
+        "properties": { "expected_skill_ids": { "minItems": 1 } }
+      }
+    },
+    {
+      "if": {
+        "properties": { "expected_decision": { "const": "reject" } },
+        "required": ["expected_decision"]
+      },
+      "then": {
+        "properties": { "expected_skill_ids": { "maxItems": 0 } },
+        "not": { "required": ["expected_exposure"] }
+      }
+    },
+    {
+      "if": { "required": ["expected_stage"] },
+      "then": {
+        "properties": { "expected_skill_ids": { "maxItems": 0 } },
+        "not": { "required": ["expected_decision"] }
+      }
+    },
+    {
+      "if": { "required": ["expected_exposure"] },
+      "then": { "properties": { "expected_skill_ids": { "minItems": 1 } } }
+    }
+  ],
+  "$defs": {
+    "objectId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "skillIdArray": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/objectId" }
+    }
+  }
+}

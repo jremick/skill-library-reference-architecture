@@ -1,0 +1,16 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: drifted-profile
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants: []
+denials:
+  - id: deny-after-profile-drift
+    selector:
+      skillIds:
+        - table-analysis
+        - deployment-runner
+    reason: Generated profile source digest mismatch blocks retrieval and activation.

@@ -1,0 +1,35 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: local-safe
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants:
+  - id: allow-local-analysis
+    selector:
+      skillIds:
+        - document-summary
+        - table-analysis
+        - deployment-review
+    permissions:
+      capabilities:
+        - content:read
+        - table:analyze
+        - deployment:review
+      resourceScopes:
+        - task:provided-content
+      resourceRoles:
+        - instructions
+        - reference
+      exposureModes:
+        - router-retrievable
+    reason: Synthetic local profile permits only read-only content analysis.
+denials:
+  - id: deny-local-mutation
+    selector:
+      riskLevels:
+        - high
+        - critical
+    reason: High-risk and critical skills are removed before retrieval.

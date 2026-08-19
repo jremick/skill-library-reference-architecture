@@ -1,0 +1,290 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:skillref:schema:activation-transition:0.1",
+  "title": "Activation lifecycle transition",
+  "description": "Content-bound evidence for one allowed skill lifecycle transition.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "transitionId",
+    "runId",
+    "timestamp",
+    "skill",
+    "fromState",
+    "toState",
+    "actor",
+    "evidence"
+  ],
+  "properties": {
+    "$schema": { "const": "urn:skillref:schema:activation-transition:0.1" },
+    "schemaVersion": { "const": "0.1" },
+    "transitionId": { "$ref": "#/$defs/opaqueId" },
+    "runId": { "$ref": "#/$defs/opaqueId" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "manifestDigest"],
+      "properties": {
+        "id": { "$ref": "#/$defs/objectId" },
+        "version": { "$ref": "#/$defs/semver" },
+        "manifestDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "fromState": { "$ref": "#/$defs/state" },
+    "toState": { "$ref": "#/$defs/state" },
+    "actor": { "enum": ["installer", "registry", "policy", "router", "model", "runtime", "verifier", "operator"] },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "reasonCodes"],
+      "properties": {
+        "decision": { "enum": ["allow", "deny", "select", "load", "start", "pass", "fail", "rollback", "deactivate"] },
+        "reasonCodes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_.-]*$", "maxLength": 100 }
+        },
+        "profileId": { "$ref": "#/$defs/objectId" },
+        "routerId": { "$ref": "#/$defs/objectId" },
+        "verificationIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/objectId" }
+        }
+      }
+    },
+    "resource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "role"],
+      "properties": {
+        "path": { "$ref": "#/$defs/relativePath" },
+        "role": { "enum": ["reference", "script", "template", "asset", "evaluation"] },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "oneOf": [
+        { "$ref": "#/$defs/absentToCached" },
+        { "$ref": "#/$defs/absentToInstalled" },
+        { "$ref": "#/$defs/cachedToInstalled" },
+        { "$ref": "#/$defs/installedToRegistered" },
+        { "$ref": "#/$defs/registeredToEligible" },
+        { "$ref": "#/$defs/registeredToDenied" },
+        { "$ref": "#/$defs/eligibleToPromptVisible" },
+        { "$ref": "#/$defs/eligibleToRouterRetrievable" },
+        { "$ref": "#/$defs/eligibleToDenied" },
+        { "$ref": "#/$defs/promptVisibleToInspected" },
+        { "$ref": "#/$defs/routerRetrievableToRetrievedCandidate" },
+        { "$ref": "#/$defs/retrievedCandidateToInspected" },
+        { "$ref": "#/$defs/inspectedToActivated" },
+        { "$ref": "#/$defs/inspectedToDenied" },
+        { "$ref": "#/$defs/activatedToConditionallyLoaded" },
+        { "$ref": "#/$defs/activatedToExecuting" },
+        { "$ref": "#/$defs/activatedToDeactivated" },
+        { "$ref": "#/$defs/conditionallyLoadedToConditionallyLoaded" },
+        { "$ref": "#/$defs/conditionallyLoadedToExecuting" },
+        { "$ref": "#/$defs/executingToVerified" },
+        { "$ref": "#/$defs/executingToFailed" },
+        { "$ref": "#/$defs/verifiedToDeactivated" },
+        { "$ref": "#/$defs/failedToDeactivated" },
+        { "$ref": "#/$defs/failedToRolledBack" },
+        { "$ref": "#/$defs/rolledBackToDeactivated" }
+      ]
+    },
+    {
+      "oneOf": [
+        { "$ref": "#/$defs/installationEvidence" },
+        { "$ref": "#/$defs/registrationEvidence" },
+        { "$ref": "#/$defs/policyAllowEvidence" },
+        { "$ref": "#/$defs/policyDenyEvidence" },
+        { "$ref": "#/$defs/retrievalEvidence" },
+        { "$ref": "#/$defs/inspectionEvidence" },
+        { "$ref": "#/$defs/activationEvidence" },
+        { "$ref": "#/$defs/resourceLoadEvidence" },
+        { "$ref": "#/$defs/executionEvidence" },
+        { "$ref": "#/$defs/verificationEvidence" },
+        { "$ref": "#/$defs/failureEvidence" },
+        { "$ref": "#/$defs/rollbackEvidence" },
+        { "$ref": "#/$defs/deactivationEvidence" }
+      ]
+    },
+    {
+      "if": { "properties": { "toState": { "const": "conditionally-loaded" } }, "required": ["toState"] },
+      "then": { "required": ["resource"] },
+      "else": { "not": { "required": ["resource"] } }
+    }
+  ],
+  "$defs": {
+    "opaqueId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$"
+    },
+    "objectId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "sha256" },
+        "value": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "relativePath": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*:)(?!.*(?:^|/)~[^/]*)(?!.*(?:^|/)\\.\\.?(?:/|$))[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*$"
+    },
+    "state": {
+      "enum": [
+        "absent",
+        "cached",
+        "installed",
+        "registered",
+        "eligible",
+        "prompt-visible",
+        "router-retrievable",
+        "retrieved-candidate",
+        "inspected",
+        "activated",
+        "conditionally-loaded",
+        "executing",
+        "verified",
+        "denied",
+        "failed",
+        "rolled-back",
+        "deactivated"
+      ]
+    },
+    "absentToCached": { "properties": { "fromState": { "const": "absent" }, "toState": { "const": "cached" } } },
+    "absentToInstalled": { "properties": { "fromState": { "const": "absent" }, "toState": { "const": "installed" } } },
+    "cachedToInstalled": { "properties": { "fromState": { "const": "cached" }, "toState": { "const": "installed" } } },
+    "installedToRegistered": { "properties": { "fromState": { "const": "installed" }, "toState": { "const": "registered" } } },
+    "registeredToEligible": { "properties": { "fromState": { "const": "registered" }, "toState": { "const": "eligible" } } },
+    "registeredToDenied": { "properties": { "fromState": { "const": "registered" }, "toState": { "const": "denied" } } },
+    "eligibleToPromptVisible": { "properties": { "fromState": { "const": "eligible" }, "toState": { "const": "prompt-visible" } } },
+    "eligibleToRouterRetrievable": { "properties": { "fromState": { "const": "eligible" }, "toState": { "const": "router-retrievable" } } },
+    "eligibleToDenied": { "properties": { "fromState": { "const": "eligible" }, "toState": { "const": "denied" } } },
+    "promptVisibleToInspected": { "properties": { "fromState": { "const": "prompt-visible" }, "toState": { "const": "inspected" } } },
+    "routerRetrievableToRetrievedCandidate": { "properties": { "fromState": { "const": "router-retrievable" }, "toState": { "const": "retrieved-candidate" } } },
+    "retrievedCandidateToInspected": { "properties": { "fromState": { "const": "retrieved-candidate" }, "toState": { "const": "inspected" } } },
+    "inspectedToActivated": { "properties": { "fromState": { "const": "inspected" }, "toState": { "const": "activated" } } },
+    "inspectedToDenied": { "properties": { "fromState": { "const": "inspected" }, "toState": { "const": "denied" } } },
+    "activatedToConditionallyLoaded": { "properties": { "fromState": { "const": "activated" }, "toState": { "const": "conditionally-loaded" } } },
+    "activatedToExecuting": { "properties": { "fromState": { "const": "activated" }, "toState": { "const": "executing" } } },
+    "activatedToDeactivated": { "properties": { "fromState": { "const": "activated" }, "toState": { "const": "deactivated" } } },
+    "conditionallyLoadedToConditionallyLoaded": { "properties": { "fromState": { "const": "conditionally-loaded" }, "toState": { "const": "conditionally-loaded" } } },
+    "conditionallyLoadedToExecuting": { "properties": { "fromState": { "const": "conditionally-loaded" }, "toState": { "const": "executing" } } },
+    "executingToVerified": { "properties": { "fromState": { "const": "executing" }, "toState": { "const": "verified" } } },
+    "executingToFailed": { "properties": { "fromState": { "const": "executing" }, "toState": { "const": "failed" } } },
+    "verifiedToDeactivated": { "properties": { "fromState": { "const": "verified" }, "toState": { "const": "deactivated" } } },
+    "failedToDeactivated": { "properties": { "fromState": { "const": "failed" }, "toState": { "const": "deactivated" } } },
+    "failedToRolledBack": { "properties": { "fromState": { "const": "failed" }, "toState": { "const": "rolled-back" } } },
+    "rolledBackToDeactivated": { "properties": { "fromState": { "const": "rolled-back" }, "toState": { "const": "deactivated" } } },
+    "installationEvidence": {
+      "properties": {
+        "toState": { "enum": ["cached", "installed"] },
+        "actor": { "const": "installer" },
+        "evidence": { "properties": { "decision": { "const": "allow" } } }
+      }
+    },
+    "registrationEvidence": {
+      "properties": {
+        "toState": { "const": "registered" },
+        "actor": { "const": "registry" },
+        "evidence": { "properties": { "decision": { "const": "allow" } } }
+      }
+    },
+    "policyAllowEvidence": {
+      "properties": {
+        "toState": { "enum": ["eligible", "prompt-visible", "router-retrievable"] },
+        "actor": { "const": "policy" },
+        "evidence": { "properties": { "decision": { "const": "allow" } } }
+      }
+    },
+    "policyDenyEvidence": {
+      "properties": {
+        "toState": { "const": "denied" },
+        "actor": { "const": "policy" },
+        "evidence": { "properties": { "decision": { "const": "deny" } } }
+      }
+    },
+    "retrievalEvidence": {
+      "properties": {
+        "toState": { "const": "retrieved-candidate" },
+        "actor": { "const": "router" },
+        "evidence": { "properties": { "decision": { "const": "select" } } }
+      }
+    },
+    "inspectionEvidence": {
+      "properties": {
+        "toState": { "const": "inspected" },
+        "actor": { "enum": ["model", "runtime"] },
+        "evidence": { "properties": { "decision": { "const": "select" } } }
+      }
+    },
+    "activationEvidence": {
+      "properties": {
+        "toState": { "const": "activated" },
+        "actor": { "const": "runtime" },
+        "evidence": { "properties": { "decision": { "const": "start" } } }
+      }
+    },
+    "resourceLoadEvidence": {
+      "properties": {
+        "toState": { "const": "conditionally-loaded" },
+        "actor": { "const": "runtime" },
+        "evidence": { "properties": { "decision": { "const": "load" } } }
+      }
+    },
+    "executionEvidence": {
+      "properties": {
+        "toState": { "const": "executing" },
+        "actor": { "const": "runtime" },
+        "evidence": { "properties": { "decision": { "const": "start" } } }
+      }
+    },
+    "verificationEvidence": {
+      "properties": {
+        "toState": { "const": "verified" },
+        "actor": { "const": "verifier" },
+        "evidence": { "properties": { "decision": { "const": "pass" } } }
+      }
+    },
+    "failureEvidence": {
+      "properties": {
+        "toState": { "const": "failed" },
+        "actor": { "enum": ["runtime", "verifier"] },
+        "evidence": { "properties": { "decision": { "const": "fail" } } }
+      }
+    },
+    "rollbackEvidence": {
+      "properties": {
+        "toState": { "const": "rolled-back" },
+        "actor": { "enum": ["runtime", "operator"] },
+        "evidence": { "properties": { "decision": { "const": "rollback" } } }
+      }
+    },
+    "deactivationEvidence": {
+      "properties": {
+        "toState": { "const": "deactivated" },
+        "actor": { "enum": ["runtime", "operator"] },
+        "evidence": { "properties": { "decision": { "const": "deactivate" } } }
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "format": "skillref.diagram-render-manifest.v0alpha1",
+  "renderer": "diagramming/render_mermaid.sh",
+  "diagrams": [
+    {
+      "name": "architecture-levels",
+      "source_sha256": "682ee5f71eb4033b354222f1c83173dfc89b661a1884c0359903c533555090e8",
+      "render_sha256": "80a1007d0be78dc56aeb13952c6f92011ca170ba5f66e1a6f24d9d21614810fc"
+    },
+    {
+      "name": "context-loading-lifecycle",
+      "source_sha256": "689515b79d94e7c2a73548672d3c9d21fc0b7178b51db2e64de7ead14045c499",
+      "render_sha256": "2f3464b3fc6e0e372aa8d4be4c8f32f3ad48a74627bb64ae2b3c51892230a0a4"
+    },
+    {
+      "name": "evaluation-loop",
+      "source_sha256": "ef9bd425d7a687e8070a47769df8ddc11fb22417afb2dbfa25aa8ab7927107ee",
+      "render_sha256": "9fd73ab621c9548c99e4174df07b624e7e624f4fa09a921ba9e24cfd70ec2499"
+    },
+    {
+      "name": "migration-path",
+      "source_sha256": "9c68bdc559ad93c37a4d5f6a7c702171c587648501d2829acb2c19356e4c0da3",
+      "render_sha256": "8ed47ca453f8a6fe634f6a7bd047542583b2b0d6fcc65630667e552ec0ee0eeb"
+    },
+    {
+      "name": "registry-schema-relationships",
+      "source_sha256": "8186edda6110c5e2acc76a060c5c968a1d22d06ddcfd673c91821e4c0958bb4a",
+      "render_sha256": "be40d166b87ab7a78464c15fd40fbaf7c2502fdfc3637baab6885d45434f1f1a"
+    },
+    {
+      "name": "routing-decision-flow",
+      "source_sha256": "74c6057c5a738139132046ba9473dc9e393810d900cedd837f02191aba3779b9",
+      "render_sha256": "7f7f50be4b988290702bce030f1a49fc8d94adb75b640b143c47adf0071397a9"
+    }
+  ]
+}

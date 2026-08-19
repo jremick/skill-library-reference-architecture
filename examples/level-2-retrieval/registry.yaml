@@ -1,0 +1,53 @@
+$schema: urn:skillref:schema:registry:0.1
+schemaVersion: "0.1"
+id: level-2-retrieval
+registryVersion: 1.0.0
+entries:
+  - id: deployment-review
+    manifest:
+      uri: skills/deployment-review/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: 9cb2e93e1f9983a2652067759b510d549579bc000c1aee8863fcf33c7d6abed2
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered
+  - id: deployment-runner
+    manifest:
+      uri: skills/deployment-runner/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: abe25cd0ed56490de1a5b8405374e752825e085c39319c1ef50106c340bb6fba
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered
+  - id: document-summary
+    manifest:
+      uri: skills/document-summary/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: f6d44f44a32a5009d5ddc909cdc02b77c476437786c6ae53791fa58af49121f5
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered
+  - id: table-analysis
+    manifest:
+      uri: skills/table-analysis/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: 8c1ef91d63955912c97375518316c5c9d99f229d6c868f595e100088b0ae800b
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered

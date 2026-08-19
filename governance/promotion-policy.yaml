@@ -1,0 +1,164 @@
+schemaVersion: "0.1"
+policyId: evidence-led-level-promotion
+policyVersion: 0.1.0
+
+enforcement:
+  status: reference-checklist
+  currentCli: not-implemented
+  publicAlphaAcceptance: external-review-required
+  claimLimit: >-
+    This file does not execute gates or authorize promotion, publication, or release.
+
+configuration:
+  mode: reference-checklist
+  unconfiguredGateResult: not-evaluated
+  notes:
+    - Numeric thresholds are deliberately unset in the reference policy.
+    - Maintainers set them from a measured simpler-level baseline and risk class.
+    - A skill count alone never requires promotion.
+    - >-
+      A separate evaluator must bind evidence and implement these checks before
+      automation may claim a gate result.
+
+evidenceWindow:
+  minimumObservations: null
+  minimumTaskClasses: null
+  maximumAgeDays: null
+  requireHeldOutCases: true
+  requireRepeatedModelTrials: true
+  preserveStatuses:
+    - PASS
+    - FAIL
+    - ERROR
+    - INCOMPLETE
+    - DENIED
+
+hardGates:
+  schemaValidation: true
+  cleanCloneValidation: true
+  sourceDigestsMatch: true
+  profileFilteringBeforeRanking: true
+  denialsOverrideGrants: true
+  unknownPermissionsDenied: true
+  privateDataScanPasses: true
+  rollbackArtifactAvailable: true
+  independentAcceptanceEvidence: true
+
+metrics:
+  taskSuccessRate:
+    direction: higher-is-better
+    threshold: null
+  verifiedOutcomeRate:
+    direction: higher-is-better
+    threshold: null
+  routingPrecision:
+    direction: higher-is-better
+    threshold: null
+  routingRecall:
+    direction: higher-is-better
+    threshold: null
+  hitAtK:
+    direction: higher-is-better
+    threshold: null
+  falseActivationRate:
+    direction: lower-is-better
+    threshold: null
+  missedActivationRate:
+    direction: lower-is-better
+    threshold: null
+  correctionRate:
+    direction: lower-is-better
+    threshold: null
+  skippedVerificationRate:
+    direction: lower-is-better
+    threshold: null
+  p95LatencyMs:
+    direction: lower-is-better
+    threshold: null
+  p95ContextTokens:
+    direction: lower-is-better
+    threshold: null
+  policyViolationRate:
+    direction: lower-is-better
+    threshold: 0
+  privacyViolationRate:
+    direction: lower-is-better
+    threshold: 0
+  staleSourceRate:
+    direction: lower-is-better
+    threshold: 0
+
+levels:
+  "0":
+    name: flat-simple
+    operatingModel: bounded visible metadata with exact activation and conditional resources
+    baseline: null
+    promotionTarget: 1
+    promotionSignals:
+      - Measured context or collision cost exceeds the locally configured budget.
+      - Stable domain boundaries can be expressed without semantic duplication.
+    requiredComparisons:
+      - Compare Level 1 against this Level 0 baseline on every configured metric.
+      - Require no regression in task success, verification, policy, or privacy.
+
+  "1":
+    name: static-routing-compiler
+    operatingModel: domain routers and exact rules compiled from canonical sources
+    baseline: 0
+    promotionTarget: 2
+    promotionSignals:
+      - Semantic overlap or catalog change makes static routing miss its local SLO.
+      - Off-prompt retrieval reduces bounded context cost in shadow evaluation.
+    requiredComparisons:
+      - Compare Level 2 with Level 1 on the same held-out tasks and profiles.
+      - Demonstrate that retrieval improves outcomes or resolves an evidenced limit.
+
+  "2":
+    name: filtered-catalog-retrieval
+    operatingModel: fail-closed filtering followed by search, inspection, and activation
+    baseline: 1
+    promotionTarget: 3
+    promotionSignals:
+      - Catalogs, profiles, trust boundaries, or changes require continuous governance.
+      - Shadow telemetry and lifecycle controls meet locally configured quality budgets.
+    requiredComparisons:
+      - Compare Level 3 with Level 2 under drift, denial, failure, and rollback cases.
+      - Demonstrate operational value beyond the presence of telemetry itself.
+
+  "3":
+    name: retrieval-served-governed
+    operatingModel: retrieval-first delivery with policy, evaluation, telemetry, lifecycle, drift, and rollback
+    baseline: 2
+    promotionTarget: null
+    promotionSignals: []
+    requiredComparisons:
+      - Continue regression comparisons with Level 2; Level 3 is reversible, not terminal.
+
+promotionDecision:
+  requireAllHardGates: true
+  requireConfiguredMetricThresholds: true
+  requireBaselineComparison: true
+  allowTokenSavingsAsSoleBenefit: false
+  allowedResults:
+    - promote
+    - remain
+    - rollback
+    - blocked
+
+rollback:
+  target: previous-proven-bundle-or-level
+  automaticTriggers:
+    policyViolationRateAbove: 0
+    privacyViolationRateAbove: 0
+    sourceDigestMismatch: true
+  locallyConfiguredTriggers:
+    taskSuccessRegressionAbove: null
+    verifiedOutcomeRegressionAbove: null
+    falseActivationRateAbove: null
+    missedActivationRateAbove: null
+    correctionRateAbove: null
+    p95LatencyRegressionAbove: null
+  requirements:
+    - Preserve failed evidence and decision inputs.
+    - Restore an immutable content-bound bundle.
+    - Re-run hard gates before resuming promotion evaluation.

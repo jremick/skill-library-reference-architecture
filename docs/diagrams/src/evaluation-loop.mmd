@@ -1,0 +1,29 @@
+flowchart LR
+  accTitle: Evaluation and promotion loop
+  accDescr: Versioned held-out tasks run against a simpler baseline and a candidate. Deterministic aggregation checks configured gates. Passing evidence supports scoped promotion; failures are retained and cause hold, rollback, or quarantine.
+
+  A["Versioned held-out cases"] --> B["Run simpler baseline"]
+  A --> C["Run candidate level"]
+  B --> D["Collect outcome, routing,<br/>policy, cost, and latency evidence"]
+  C --> D
+  D --> E["Aggregate deterministically"]
+  E --> F{"Configured gates pass?"}
+  F -- "Yes" --> G["Scoped promotion"]
+  F -- "No" --> H["Hold, rollback, or quarantine"]
+  H --> I["Retain failure evidence"]
+  I --> J["Add regression fixture or<br/>revise the candidate"]
+  J -. "next version" .-> C
+  G --> K["Monitor real outcomes"]
+  K -. "drift or regression" .-> H
+
+  classDef test fill:#78909C,stroke:#607D8B,color:#FFFFFF;
+  classDef automated fill:#20808D,stroke:#187078,color:#FFFFFF;
+  classDef decision fill:#FFF3E0,stroke:#C47530,color:#13343B;
+  classDef success fill:#2E7D32,stroke:#2E7D32,color:#FFFFFF;
+  classDef stop fill:#C62828,stroke:#C62828,color:#FFFFFF;
+
+  class A,B,C,D test;
+  class E,I,J,K automated;
+  class F decision;
+  class G success;
+  class H stop;

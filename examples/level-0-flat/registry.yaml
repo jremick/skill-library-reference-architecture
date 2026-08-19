@@ -1,0 +1,29 @@
+$schema: urn:skillref:schema:registry:0.1
+schemaVersion: "0.1"
+id: level-0-flat
+registryVersion: 1.0.0
+entries:
+  - id: document-summary
+    manifest:
+      uri: skills/document-summary/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: f6d44f44a32a5009d5ddc909cdc02b77c476437786c6ae53791fa58af49121f5
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered
+  - id: travel-checklist
+    manifest:
+      uri: skills/travel-checklist/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: 8fafd83b42a05fbe49da70427efb45bf65bd3ded13c39586e46e2a018da3bee3
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered

@@ -1,0 +1,36 @@
+flowchart TB
+  accTitle: Routing decision flow
+  accDescr: Deterministic validation and policy filtering happen before exact routing or semantic ranking. Candidate inspection, conflict checks, version pinning, and authority checks precede activation.
+
+  A["User request"] --> B["Validate registry and profile"]
+  B --> C["Apply verified profile, lifecycle,<br/>and permission filters"]
+  C --> D{"Eligible records remain?"}
+  D -- "No" --> X["Explain denial or no capability"]
+  D -- "Yes" --> E{"Exact route?"}
+  E -- "Yes" --> H["Inspect exact candidate"]
+  E -- "No" --> F["Search eligible catalog"]
+  F --> G["Rank semantic candidates"]
+  G --> H
+  H --> I{"Hard conflict or<br/>missing dependency?"}
+  I -- "Yes" --> Y["Stop or request review"]
+  I -- "No" --> J{"Semantic ambiguity?"}
+  J -- "Yes" --> K["Bounded model or human review"]
+  J -- "No" --> L["Pin version and re-check authority"]
+  K --> L
+  L --> M{"Authorized now?"}
+  M -- "No" --> X
+  M -- "Yes" --> N["Activate and record decision"]
+
+  classDef deterministic fill:#78909C,stroke:#607D8B,color:#FFFFFF;
+  classDef model fill:#20808D,stroke:#187078,color:#FFFFFF;
+  classDef human fill:#E08A3C,stroke:#C47530,color:#13343B;
+  classDef decision fill:#E8F4F6,stroke:#187078,color:#13343B;
+  classDef stop fill:#C62828,stroke:#C62828,color:#FFFFFF;
+  classDef success fill:#2E7D32,stroke:#2E7D32,color:#FFFFFF;
+
+  class B,C,F,H,L deterministic;
+  class G model;
+  class K human;
+  class D,E,I,J,M decision;
+  class X,Y stop;
+  class N success;

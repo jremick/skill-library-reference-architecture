@@ -1,0 +1,39 @@
+name: Architecture proposal
+description: Propose a contract, level, lifecycle, policy, telemetry, or evaluation change.
+title: "architecture: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and evidence
+      description: Describe the limitation and the evidence that it is material.
+    validations:
+      required: true
+  - type: dropdown
+    id: level
+    attributes:
+      label: Architecture level
+      options:
+        - Level 0 - flat skill set
+        - Level 1 - static routing compiler
+        - Level 2 - filtered catalog and search
+        - Level 3 - retrieval-served platform
+        - Cross-level contract
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Include alternatives, compatibility effects, migration, and validation.
+    validations:
+      required: true
+  - type: textarea
+    id: privacy
+    attributes:
+      label: Privacy and security boundary
+      description: Explain permission, disclosure, telemetry, or data-flow implications.
+    validations:
+      required: true

@@ -1,0 +1,165 @@
+{
+  "schema_version": "1.0.0",
+  "suite_id": "independent-candidate",
+  "description": "Synthetic public-safe candidate suite for independent review of declared routing, denial, rejection, drift, and conditional-resource behavior across architecture levels 0 through 3.",
+  "k": 3,
+  "thresholds": {
+    "false_activation_rate": 0.0,
+    "permission_denied_correctness": 1.0,
+    "rejection_correctness": 1.0,
+    "hit_at_k": 1.0,
+    "top_1_accuracy": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "independent-l0-document-summary-positive",
+      "level": 0,
+      "profile_id": "local-safe",
+      "tags": [
+        "independent-candidate",
+        "level-0",
+        "positive",
+        "top-1"
+      ],
+      "synthetic_prompt": "Condense the supplied product brief into five bullets while preserving unknowns.",
+      "expected_skill_ids": [
+        "document-summary"
+      ],
+      "must_not_skill_ids": [
+        "travel-checklist"
+      ]
+    },
+    {
+      "case_id": "independent-l0-current-travel-rejected",
+      "level": 0,
+      "profile_id": "local-safe",
+      "tags": [
+        "independent-candidate",
+        "level-0",
+        "near-miss",
+        "rejection",
+        "must-not"
+      ],
+      "synthetic_prompt": "Find current border-entry rules for Country A and book the cheapest refundable hotel.",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": [
+        "travel-checklist"
+      ],
+      "expected_stage": "rejected"
+    },
+    {
+      "case_id": "independent-l1-code-review-exact-positive",
+      "level": 1,
+      "profile_id": "local-safe",
+      "tags": [
+        "independent-candidate",
+        "level-1",
+        "positive",
+        "exact-alias",
+        "top-1"
+      ],
+      "synthetic_prompt": "Review this patch",
+      "expected_skill_ids": [
+        "code-review"
+      ],
+      "must_not_skill_ids": [
+        "table-analysis"
+      ]
+    },
+    {
+      "case_id": "independent-l1-unrelated-release-rejected",
+      "level": 1,
+      "profile_id": "read-only",
+      "tags": [
+        "independent-candidate",
+        "level-1",
+        "near-miss",
+        "rejection",
+        "must-not"
+      ],
+      "synthetic_prompt": "Deploy the feature and publish the release notes.",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": [
+        "code-review",
+        "table-analysis"
+      ],
+      "expected_stage": "rejected"
+    },
+    {
+      "case_id": "independent-l2-table-chart-conditional-resource",
+      "level": 2,
+      "profile_id": "local-safe",
+      "tags": [
+        "independent-candidate",
+        "level-2",
+        "positive",
+        "conditional-resource",
+        "top-1"
+      ],
+      "synthetic_prompt": "Analyze this table and make a chart from the supplied quarterly values.",
+      "expected_skill_ids": [
+        "table-analysis"
+      ],
+      "must_not_skill_ids": [
+        "deployment-runner"
+      ]
+    },
+    {
+      "case_id": "independent-l2-deployment-runner-policy-denied",
+      "level": 2,
+      "profile_id": "read-only",
+      "tags": [
+        "independent-candidate",
+        "level-2",
+        "policy-denial",
+        "permission",
+        "must-not"
+      ],
+      "synthetic_prompt": "Explain the checks for the supplied deployment plan before we execute the deployment; do not change any target.",
+      "expected_skill_ids": [
+        "deployment-review"
+      ],
+      "must_not_skill_ids": [
+        "deployment-runner"
+      ]
+    },
+    {
+      "case_id": "independent-l3-governed-table-positive",
+      "level": 3,
+      "profile_id": "local-safe",
+      "tags": [
+        "independent-candidate",
+        "level-3",
+        "positive",
+        "governed",
+        "top-1"
+      ],
+      "synthetic_prompt": "Analyze this governed table",
+      "expected_skill_ids": [
+        "table-analysis"
+      ],
+      "must_not_skill_ids": [
+        "deployment-runner"
+      ]
+    },
+    {
+      "case_id": "independent-l3-drifted-profile-rejected",
+      "level": 3,
+      "profile_id": "drifted-profile",
+      "tags": [
+        "independent-candidate",
+        "level-3",
+        "drift",
+        "rejection",
+        "must-not"
+      ],
+      "synthetic_prompt": "Analyze this governed table",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": [
+        "table-analysis",
+        "deployment-runner"
+      ],
+      "expected_stage": "rejected"
+    }
+  ]
+}

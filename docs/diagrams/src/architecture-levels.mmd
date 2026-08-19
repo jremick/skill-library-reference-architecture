@@ -1,0 +1,29 @@
+flowchart LR
+  accTitle: Four architecture levels
+  accDescr: The architecture grows from a flat skill set to static domain routers, filtered catalog retrieval, and a fully governed retrieval-served platform. Configured evidence gates separate every level.
+
+  L0["Level 0<br/>Flat eligible set<br/>Progressive resources"]
+  G01{"Local evidence gate"}
+  L1["Level 1<br/>Static domain routers<br/>Deterministic compiler"]
+  G12{"Local evidence gate"}
+  L2["Level 2<br/>Pre-filtered catalog<br/>Search and inspect"]
+  G23{"Local evidence gate"}
+  L3["Level 3<br/>Policy and telemetry<br/>Evaluation and lifecycle"]
+
+  L0 --> G01 --> L1 --> G12 --> L2 --> G23 --> L3
+  L3 -. "rollback" .-> L2
+  L2 -. "rollback" .-> L1
+  L1 -. "rollback" .-> L0
+
+  E["Evidence: outcomes, routing, privacy,<br/>latency, cost, drift, rollback"]
+  E -.-> G01
+  E -.-> G12
+  E -.-> G23
+
+  classDef level fill:#20808D,stroke:#187078,color:#FFFFFF;
+  classDef gate fill:#FFF3E0,stroke:#C47530,color:#13343B;
+  classDef evidence fill:#78909C,stroke:#607D8B,color:#FFFFFF;
+
+  class L0,L1,L2,L3 level;
+  class G01,G12,G23 gate;
+  class E evidence;

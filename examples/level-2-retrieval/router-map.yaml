@@ -1,0 +1,73 @@
+$schema: urn:skillref:schema:router-map:0.1
+schemaVersion: "0.1"
+id: level-2-retrieval
+version: 1.0.0
+sourceRegistryDigest:
+  algorithm: sha256
+  value: edd8b7e98ba5af92a648dd24277a24431df7ed7513baa10479e7bc71f4d56a9c
+policy:
+  filterBeforeRanking: true
+  denialsOverrideGrants: true
+  ambiguityAction: clarify
+retrieval:
+  enabled: true
+  mode: hybrid
+  candidateLimit: 4
+  inspectLimit: 2
+  scoreThreshold: 0.55
+  fallback: static-router
+routers:
+  - id: knowledge-router
+    domain: knowledge-work
+    skills:
+      - document-summary
+      - table-analysis
+    strategy: filtered-search
+    exactAliases:
+      - phrase: summarize this document
+        skillId: document-summary
+      - phrase: analyze this table
+        skillId: table-analysis
+    keywordRules:
+      - terms:
+          - summarize
+          - document
+        match: any
+        skillId: document-summary
+        weight: 0.8
+      - terms:
+          - analyze
+          - table
+        match: any
+        skillId: table-analysis
+        weight: 0.8
+    fallback:
+      action: search
+  - id: delivery-router
+    domain: software-delivery
+    skills:
+      - deployment-review
+      - deployment-runner
+    strategy: filtered-search
+    exactAliases:
+      - phrase: review this deployment plan
+        skillId: deployment-review
+      - phrase: execute this deployment
+        skillId: deployment-runner
+    keywordRules:
+      - terms:
+          - deployment
+          - review
+          - explain
+          - checks
+        match: any
+        skillId: deployment-review
+        weight: 0.8
+      - terms:
+          - execute
+          - deployment
+        match: all
+        skillId: deployment-runner
+        weight: 1.0
+    fallback:
+      action: search

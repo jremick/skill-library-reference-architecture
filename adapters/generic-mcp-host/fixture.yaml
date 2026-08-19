@@ -1,0 +1,18 @@
+schemaVersion: "0.1"
+adapter: generic-mcp-host
+status: illustrative
+checkedOn: "2026-08-20"
+portableSource: ../../examples/level-2-retrieval/skills/document-summary
+hostPlacement: server-managed-content-store
+entrypoint: SKILL.md
+vendorFields:
+  discoveryTool: skill_catalog.search
+  inspectionTool: skill_catalog.inspect
+  activationTool: skill_catalog.activate
+  protocolMethods:
+    discovery: tools/list
+    invocation: tools/call
+assumptions:
+  - Policy filtering occurs before search results are returned.
+  - Tool annotations are never treated as authorization.
+  - The host verifies the selected manifest and content digest before loading.

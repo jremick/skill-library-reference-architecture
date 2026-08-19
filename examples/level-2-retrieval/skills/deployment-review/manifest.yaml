@@ -1,0 +1,44 @@
+$schema: urn:skillref:schema:skill-manifest:0.1
+schemaVersion: "0.1"
+id: deployment-review
+version: 1.0.0
+name: Deployment review
+description: Review and explain a supplied deployment plan without executing commands or changing a target.
+license: Apache-2.0
+domains:
+  - software-delivery
+triggers:
+  include:
+    - Explain deployment checks, risks, prerequisites, or rollback without execution.
+  exclude:
+    - Do not use when the requested outcome is an actual deployment mutation.
+risk:
+  level: low
+  sideEffects: false
+  rationale: Produces a read-only review and does not access or mutate a live target.
+permissions:
+  capabilities:
+    - content:read
+    - deployment:review
+  resourceScopes:
+    - task:provided-content
+resources:
+  entrypoint: SKILL.md
+  items: []
+conflicts:
+  hard: []
+  supersedes: []
+  companions: []
+evaluation:
+  suiteRefs:
+    - evals/development/cases.json
+    - evals/heldout/cases.json
+compatibility:
+  spec: agent-skills
+  runtimes:
+    - portable-core
+  notes: Safe explanatory alternative to the policy-denied deployment runner.
+provenance:
+  source: synthetic:deployment-review
+  maintainers:
+    - reference-architecture-maintainers

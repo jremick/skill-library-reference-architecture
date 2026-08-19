@@ -1,0 +1,43 @@
+$schema: urn:skillref:schema:skill-manifest:0.1
+schemaVersion: "0.1"
+id: code-review
+version: 1.0.0
+name: Code review
+description: Review a supplied code change for actionable correctness, security, reliability, and test findings.
+license: Apache-2.0
+domains:
+  - software-engineering
+triggers:
+  include:
+    - Review a patch, diff, or implementation and report findings.
+  exclude:
+    - Do not use when the requested outcome is implementation, deployment, or publication.
+risk:
+  level: low
+  sideEffects: false
+  rationale: Performs a read-only review and reports findings without edits.
+permissions:
+  capabilities:
+    - content:read
+    - code:review
+  resourceScopes:
+    - task:provided-content
+resources:
+  entrypoint: SKILL.md
+  items: []
+conflicts:
+  hard: []
+  supersedes: []
+  companions: []
+evaluation:
+  suiteRefs:
+    - evals/heldout/cases.json
+compatibility:
+  spec: agent-skills
+  runtimes:
+    - portable-core
+  notes: Review-only intent takes precedence over incidental deployment vocabulary.
+provenance:
+  source: synthetic:code-review
+  maintainers:
+    - reference-architecture-maintainers

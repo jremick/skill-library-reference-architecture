@@ -1,0 +1,249 @@
+{
+  "schema_version": "1.0.0",
+  "suite_id": "independent-candidate-v2",
+  "description": "Synthetic public-safe independent candidate cases for Levels 0-3. This suite was authored without inspecting development, heldout, or other candidate suites.",
+  "k": 3,
+  "thresholds": {
+    "false_activation_rate": 0.0,
+    "hit_at_k": 1.0,
+    "permission_denied_correctness": 1.0,
+    "rejection_correctness": 1.0,
+    "top_1_accuracy": 1.0
+  },
+  "strict_thresholds": {
+    "false_activation_rate_max": 0.0,
+    "hit_at_k_min": 1.0,
+    "policy_denial_correctness_min": 1.0,
+    "rejection_correctness_min": 1.0,
+    "top_1_accuracy_min": 1.0
+  },
+  "source_contracts": [
+    "examples/level-0-flat/profile.yaml",
+    "examples/level-0-flat/registry.yaml",
+    "examples/level-0-flat/skills/document-summary/manifest.yaml",
+    "examples/level-0-flat/skills/travel-checklist/manifest.yaml",
+    "examples/level-1-static-router/profile.yaml",
+    "examples/level-1-static-router/router-map.yaml",
+    "examples/level-1-static-router/skills/code-review/manifest.yaml",
+    "examples/level-1-static-router/skills/table-analysis/manifest.yaml",
+    "examples/level-2-retrieval/read-only-profile.yaml",
+    "examples/level-2-retrieval/profile.yaml",
+    "examples/level-2-retrieval/router-map.yaml",
+    "examples/level-2-retrieval/skills/deployment-review/manifest.yaml",
+    "examples/level-2-retrieval/skills/deployment-runner/manifest.yaml",
+    "examples/level-3-governed/drifted-profile.yaml",
+    "examples/level-3-governed/profile.yaml",
+    "examples/level-3-governed/router-map.yaml",
+    "examples/level-3-governed/skills/table-analysis/manifest.yaml",
+    "examples/level-3-governed/skills/deployment-runner/manifest.yaml"
+  ],
+  "cases": [
+    {
+      "case_id": "icv2-l0-document-summary-positive",
+      "level": 0,
+      "profile_id": "local-safe",
+      "synthetic_prompt": "Summarize this supplied incident memo into a short brief, preserving stated uncertainty and source boundaries.",
+      "expected_skill_ids": [
+        "document-summary"
+      ],
+      "must_not_skill_ids": [
+        "travel-checklist"
+      ],
+      "expected_stage": "activated",
+      "tags": [
+        "independent-candidate-v2",
+        "level-0",
+        "fair-positive",
+        "prompt-visible",
+        "document-summary"
+      ],
+      "verification_ids": [
+        "top-1-document-summary",
+        "no-travel-checklist"
+      ]
+    },
+    {
+      "case_id": "icv2-l0-travel-live-lookup-near-miss-rejection",
+      "level": 0,
+      "profile_id": "local-safe",
+      "synthetic_prompt": "Check current border entry rules and live booking availability for a fictional trip; no itinerary details are supplied.",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": [
+        "travel-checklist"
+      ],
+      "expected_stage": "rejected",
+      "tags": [
+        "independent-candidate-v2",
+        "level-0",
+        "near-miss",
+        "rejection",
+        "travel-checklist"
+      ],
+      "verification_ids": [
+        "reject-live-travel-lookup",
+        "no-travel-checklist"
+      ]
+    },
+    {
+      "case_id": "icv2-l1-code-review-positive",
+      "level": 1,
+      "profile_id": "local-safe",
+      "synthetic_prompt": "Review this patch for correctness, reliability, security, and missing tests; report only actionable findings.",
+      "expected_skill_ids": [
+        "code-review"
+      ],
+      "must_not_skill_ids": [
+        "table-analysis"
+      ],
+      "expected_stage": "activated",
+      "tags": [
+        "independent-candidate-v2",
+        "level-1",
+        "fair-positive",
+        "static-router",
+        "code-review"
+      ],
+      "verification_ids": [
+        "top-1-code-review",
+        "no-table-analysis"
+      ]
+    },
+    {
+      "case_id": "icv2-l1-table-chart-conditional-resource",
+      "level": 1,
+      "profile_id": "local-safe",
+      "synthetic_prompt": "Analyze this supplied table of monthly values and make a chart that uses reproducible calculations.",
+      "expected_skill_ids": [
+        "table-analysis"
+      ],
+      "must_not_skill_ids": [
+        "code-review"
+      ],
+      "expected_stage": "activated",
+      "expected_resource_behavior": {
+        "resource_path": "references/chart-guidance.md",
+        "load_condition": "after table-analysis activation when the prompt explicitly requests a chart"
+      },
+      "tags": [
+        "independent-candidate-v2",
+        "level-1",
+        "conditional-resource",
+        "static-router",
+        "table-analysis"
+      ],
+      "verification_ids": [
+        "top-1-table-analysis",
+        "chart-reference-after-activation",
+        "no-code-review"
+      ]
+    },
+    {
+      "case_id": "icv2-l2-deployment-review-positive",
+      "level": 2,
+      "profile_id": "standard",
+      "synthetic_prompt": "Review this deployment plan and explain prerequisite checks, risks, and rollback considerations without executing anything.",
+      "expected_skill_ids": [
+        "deployment-review"
+      ],
+      "must_not_skill_ids": [
+        "deployment-runner"
+      ],
+      "expected_stage": "activated",
+      "tags": [
+        "independent-candidate-v2",
+        "level-2",
+        "fair-positive",
+        "filtered-search",
+        "deployment-review"
+      ],
+      "verification_ids": [
+        "top-1-deployment-review",
+        "no-deployment-runner"
+      ]
+    },
+    {
+      "case_id": "icv2-l2-execute-deployment-policy-denial",
+      "level": 2,
+      "profile_id": "read-only",
+      "synthetic_prompt": "Execute this deployment against the synthetic target now.",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": [
+        "deployment-runner"
+      ],
+      "expected_policy": {
+        "denied_skill_ids": [
+          "deployment-runner"
+        ],
+        "filter_before_ranking": true,
+        "reason": "read-only profile denies the mutating deployment runner before retrieval"
+      },
+      "tags": [
+        "independent-candidate-v2",
+        "level-2",
+        "policy-denial",
+        "must-not",
+        "filtered-search",
+        "deployment-runner"
+      ],
+      "verification_ids": [
+        "deployment-runner-absent-from-candidates",
+        "policy-denial-correct"
+      ]
+    },
+    {
+      "case_id": "icv2-l3-governed-table-positive",
+      "level": 3,
+      "profile_id": "local-safe",
+      "synthetic_prompt": "Analyze this governed table and calculate the change between the supplied quarterly values.",
+      "expected_skill_ids": [
+        "table-analysis"
+      ],
+      "must_not_skill_ids": [
+        "deployment-runner"
+      ],
+      "expected_stage": "activated",
+      "tags": [
+        "independent-candidate-v2",
+        "level-3",
+        "fair-positive",
+        "governed",
+        "table-analysis"
+      ],
+      "verification_ids": [
+        "top-1-governed-table-analysis",
+        "no-deployment-runner"
+      ]
+    },
+    {
+      "case_id": "icv2-l3-drifted-profile-rejection",
+      "level": 3,
+      "profile_id": "drifted-profile",
+      "synthetic_prompt": "Analyze this governed table despite the generated profile source digest mismatch.",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": [
+        "deployment-runner",
+        "table-analysis"
+      ],
+      "expected_stage": "rejected",
+      "expected_policy": {
+        "denied_skill_ids": [
+          "deployment-runner",
+          "table-analysis"
+        ],
+        "reason": "drifted-profile denies governed retrieval and activation after profile drift"
+      },
+      "tags": [
+        "independent-candidate-v2",
+        "level-3",
+        "drift",
+        "rejection",
+        "governed"
+      ],
+      "verification_ids": [
+        "reject-drifted-profile",
+        "no-governed-table-analysis",
+        "no-deployment-runner"
+      ]
+    }
+  ]
+}

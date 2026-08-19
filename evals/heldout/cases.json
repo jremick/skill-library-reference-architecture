@@ -1,0 +1,92 @@
+{
+  "schema_version": "0.1.0",
+  "suite_id": "synthetic-heldout-v1",
+  "purpose": "Synthetic release-gate cases that must not be used for tuning.",
+  "thresholds": {
+    "exposure_correctness": 1.0,
+    "false_activation_rate": 0.0,
+    "hit_at_k": 1.0,
+    "permission_denied_correctness": 1.0,
+    "rejection_correctness": 1.0,
+    "top_1_accuracy": 1.0
+  },
+  "cases": [
+    {
+      "case_id": "hold-l0-explicit-travel",
+      "level": 0,
+      "intent_label": "travel-checklist",
+      "synthetic_prompt": "Prepare a packing checklist for a fictional weekend rail trip.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": ["travel-checklist"],
+      "must_not_skill_ids": ["table-analysis"],
+      "expected_decision": "select",
+      "expected_exposure": "prompt_visible",
+      "tags": ["baseline", "heldout"],
+      "rationale": "The exact low-risk leaf is visible in the flat baseline."
+    },
+    {
+      "case_id": "hold-l1-near-miss",
+      "level": 1,
+      "intent_label": "code-review",
+      "synthetic_prompt": "Review this fictional patch for correctness without deploying it.",
+      "profile_id": "read-only",
+      "expected_skill_ids": ["code-review"],
+      "must_not_skill_ids": ["deployment-runner"],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["static-router", "near-miss", "heldout"],
+      "rationale": "Deployment vocabulary must not override the explicit review intent."
+    },
+    {
+      "case_id": "hold-l2-off-prompt-retrieval",
+      "level": 2,
+      "intent_label": "document-summary",
+      "synthetic_prompt": "Condense the fictional research memo into three findings.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": ["document-summary"],
+      "must_not_skill_ids": ["travel-checklist"],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["router-retrievable", "prompt-hidden", "heldout"],
+      "rationale": "An eligible off-prompt leaf can be selected from the router-retrievable surface."
+    },
+    {
+      "case_id": "hold-l2-denied-top-k",
+      "level": 2,
+      "intent_label": "deployment-explanation",
+      "synthetic_prompt": "Describe the fictional deployment workflow; do not execute it.",
+      "profile_id": "read-only",
+      "expected_skill_ids": ["deployment-review"],
+      "must_not_skill_ids": ["deployment-runner"],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["permission", "must-not", "top-k", "heldout"],
+      "rationale": "The denied mutating skill must be absent from the candidate set and top-k."
+    },
+    {
+      "case_id": "hold-l3-table-routing-no-chart",
+      "level": 3,
+      "intent_label": "table-analysis-no-chart",
+      "synthetic_prompt": "State the largest change in the sample table; no chart is needed.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": ["table-analysis"],
+      "must_not_skill_ids": [],
+      "expected_decision": "select",
+      "expected_exposure": "router_retrievable",
+      "tags": ["chart-near-miss", "negative", "heldout"],
+      "rationale": "The routing evaluator asserts the table skill selection only and makes no claim about resource loading."
+    },
+    {
+      "case_id": "hold-l3-unrelated-rejection",
+      "level": 3,
+      "intent_label": "unrelated-rejection",
+      "synthetic_prompt": "Draft a fictional meeting transcript with named speakers.",
+      "profile_id": "local-safe",
+      "expected_skill_ids": [],
+      "must_not_skill_ids": ["deployment-runner", "table-analysis"],
+      "expected_decision": "reject",
+      "tags": ["near-miss", "rejection", "heldout"],
+      "rationale": "A request outside the eligible routing surface must return no candidates."
+    }
+  ]
+}

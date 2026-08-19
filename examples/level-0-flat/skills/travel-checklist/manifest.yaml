@@ -1,0 +1,42 @@
+$schema: urn:skillref:schema:skill-manifest:0.1
+schemaVersion: "0.1"
+id: travel-checklist
+version: 1.0.0
+name: Travel checklist
+description: Create a preparation checklist from supplied trip details without booking, purchasing, or live lookup.
+license: Apache-2.0
+domains:
+  - travel
+triggers:
+  include:
+    - Prepare a packing or departure checklist for a described trip.
+  exclude:
+    - Do not use for live availability, booking, purchasing, or current entry-rule claims.
+risk:
+  level: low
+  sideEffects: false
+  rationale: Organizes supplied details and performs no external action.
+permissions:
+  capabilities:
+    - content:read
+  resourceScopes:
+    - task:provided-content
+resources:
+  entrypoint: SKILL.md
+  items: []
+conflicts:
+  hard: []
+  supersedes: []
+  companions: []
+evaluation:
+  suiteRefs:
+    - evals/heldout/cases.json
+compatibility:
+  spec: agent-skills
+  runtimes:
+    - portable-core
+  notes: Current travel data requires a separately permitted capability.
+provenance:
+  source: synthetic:travel-checklist
+  maintainers:
+    - reference-architecture-maintainers

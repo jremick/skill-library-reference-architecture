@@ -1,0 +1,44 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: standard
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants:
+  - id: allow-standard-read-only-skills
+    selector:
+      skillIds:
+        - document-summary
+        - table-analysis
+        - deployment-review
+    permissions:
+      capabilities:
+        - content:read
+        - table:analyze
+        - deployment:review
+      resourceScopes:
+        - task:provided-content
+      resourceRoles:
+        - instructions
+        - reference
+      exposureModes:
+        - router-retrievable
+    reason: Standard retrieval exposes reviewed read-only skills off-prompt.
+denials:
+  - id: deny-mutating-deployment
+    selector:
+      skillIds:
+        - deployment-runner
+    permissions:
+      capabilities:
+        - deployment:execute
+        - system:write
+      resourceScopes:
+        - synthetic:deployment-target
+      resourceRoles:
+        - instructions
+      exposureModes:
+        - router-retrievable
+    reason: Mutating deployment is excluded before catalog search and ranking.

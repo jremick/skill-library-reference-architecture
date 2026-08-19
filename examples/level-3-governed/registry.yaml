@@ -1,0 +1,29 @@
+$schema: urn:skillref:schema:registry:0.1
+schemaVersion: "0.1"
+id: level-3-governed
+registryVersion: 1.0.0
+entries:
+  - id: deployment-runner
+    manifest:
+      uri: skills/deployment-runner/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: abe25cd0ed56490de1a5b8405374e752825e085c39319c1ef50106c340bb6fba
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered
+  - id: table-analysis
+    manifest:
+      uri: skills/table-analysis/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: 8c1ef91d63955912c97375518316c5c9d99f229d6c868f595e100088b0ae800b
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered

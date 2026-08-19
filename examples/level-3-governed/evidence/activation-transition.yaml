@@ -1,0 +1,21 @@
+$schema: urn:skillref:schema:activation-transition:0.1
+schemaVersion: "0.1"
+transitionId: transition:synthetic:0001
+runId: run:synthetic:0001
+timestamp: "2026-01-15T10:00:00Z"
+skill:
+  id: table-analysis
+  version: 1.0.0
+  manifestDigest:
+    algorithm: sha256
+    value: 8c1ef91d63955912c97375518316c5c9d99f229d6c868f595e100088b0ae800b
+fromState: inspected
+toState: activated
+actor: runtime
+evidence:
+  decision: start
+  reasonCodes:
+    - policy.allowed
+    - exact-version.selected
+  profileId: local-safe
+  routerId: governed-data-router

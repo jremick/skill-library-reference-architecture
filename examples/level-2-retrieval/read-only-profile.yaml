@@ -1,0 +1,34 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: read-only
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants:
+  - id: allow-read-only-retrieval
+    selector:
+      skillIds:
+        - document-summary
+        - table-analysis
+        - deployment-review
+    permissions:
+      capabilities:
+        - content:read
+        - table:analyze
+        - deployment:review
+      resourceScopes:
+        - task:provided-content
+      resourceRoles:
+        - instructions
+        - reference
+      exposureModes:
+        - router-retrievable
+    reason: Explanatory and analytical skills are eligible for read-only tasks.
+denials:
+  - id: deny-deployment-runner
+    selector:
+      skillIds:
+        - deployment-runner
+    reason: The runner must be absent from candidates, top-k, inspection, and activation.

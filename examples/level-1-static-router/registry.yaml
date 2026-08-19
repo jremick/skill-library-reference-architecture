@@ -1,0 +1,29 @@
+$schema: urn:skillref:schema:registry:0.1
+schemaVersion: "0.1"
+id: level-1-static-router
+registryVersion: 1.0.0
+entries:
+  - id: code-review
+    manifest:
+      uri: skills/code-review/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: 27d3a982a171cb4f8870ac00bf713ce30e58811b4b73c3e08482544e429ea9ce
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered
+  - id: table-analysis
+    manifest:
+      uri: skills/table-analysis/manifest.yaml
+      digest:
+        algorithm: sha256
+        value: 8c1ef91d63955912c97375518316c5c9d99f229d6c868f595e100088b0ae800b
+    lifecycle:
+      status: active
+    availability:
+      cacheState: cached
+      installState: installed
+      registrationState: registered

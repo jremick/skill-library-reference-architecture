@@ -1,0 +1,12 @@
+schemaVersion: "0.1"
+adapter: codex-style
+status: illustrative
+checkedOn: "2026-08-20"
+portableSource: ../../examples/level-2-retrieval/skills/document-summary
+hostPlacement: .agents/skills/document-summary
+entrypoint: SKILL.md
+vendorFields: {}
+assumptions:
+  - The selected Codex host discovers project skills from this placement.
+  - Eligibility was decided before the adapter exposed the directory.
+  - Host installation and invocation behavior is verified separately.

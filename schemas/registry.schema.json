@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:skillref:schema:registry:0.1",
+  "title": "Skill registry",
+  "description": "Index of content-bound manifest references and registration lifecycle.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "id", "registryVersion", "entries"],
+  "properties": {
+    "$schema": { "const": "urn:skillref:schema:registry:0.1" },
+    "schemaVersion": { "const": "0.1" },
+    "id": { "$ref": "#/$defs/objectId" },
+    "registryVersion": { "$ref": "#/$defs/semver" },
+    "entries": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/entry" }
+    }
+  },
+  "$defs": {
+    "objectId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "sha256" },
+        "value": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "manifestRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "digest"],
+      "properties": {
+        "uri": { "type": "string", "format": "uri-reference", "minLength": 1, "maxLength": 2048 },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "lifecycle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["draft", "active", "deprecated", "retired"] },
+        "since": { "type": "string", "format": "date-time" },
+        "replacementId": { "$ref": "#/$defs/objectId" },
+        "reason": { "type": "string", "minLength": 1, "maxLength": 1000 }
+      }
+    },
+    "availability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["cacheState", "installState", "registrationState"],
+      "properties": {
+        "cacheState": { "enum": ["absent", "cached"] },
+        "installState": { "enum": ["absent", "installed"] },
+        "registrationState": { "const": "registered" },
+        "observedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "manifest", "lifecycle"],
+      "properties": {
+        "id": { "$ref": "#/$defs/objectId" },
+        "manifest": { "$ref": "#/$defs/manifestRef" },
+        "lifecycle": { "$ref": "#/$defs/lifecycle" },
+        "availability": { "$ref": "#/$defs/availability" }
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+$schema: urn:skillref:schema:router-map:0.1
+schemaVersion: "0.1"
+id: level-3-governed
+version: 1.0.0
+sourceRegistryDigest:
+  algorithm: sha256
+  value: 8d5dee35edbd4a13040aa5303540d00bfc75dc4a99f5a97becd94a61f747f9cb
+policy:
+  filterBeforeRanking: true
+  denialsOverrideGrants: true
+  ambiguityAction: decline
+retrieval:
+  enabled: true
+  mode: hybrid
+  candidateLimit: 2
+  inspectLimit: 1
+  scoreThreshold: 0.7
+  fallback: decline
+routers:
+  - id: governed-data-router
+    domain: data-analysis
+    skills:
+      - table-analysis
+    strategy: hybrid
+    exactAliases:
+      - phrase: analyze this governed table
+        skillId: table-analysis
+    keywordRules:
+      - terms:
+          - analyze
+          - table
+        match: all
+        skillId: table-analysis
+        weight: 1.0
+    fallback:
+      action: decline
+  - id: governed-delivery-router
+    domain: software-delivery
+    skills:
+      - deployment-runner
+    strategy: hybrid
+    exactAliases:
+      - phrase: execute this governed deployment
+        skillId: deployment-runner
+    keywordRules:
+      - terms:
+          - execute
+          - deployment
+        match: all
+        skillId: deployment-runner
+        weight: 1.0
+    fallback:
+      action: decline

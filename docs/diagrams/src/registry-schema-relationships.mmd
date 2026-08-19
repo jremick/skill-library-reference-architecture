@@ -1,0 +1,50 @@
+flowchart LR
+  accTitle: Registry and schema relationships
+  accDescr: Schema-validated manifests and registry records feed one canonical registry. The registry produces router, catalog, and adapter views. Policy constrains activation; redacted runtime evidence supports evaluation and promotion.
+
+  subgraph source["Canonical inputs"]
+    M["Skill manifests"]
+    R["Registry"]
+    T["Router map"]
+    P["Profile and policy"]
+    V["Versioned schemas"]
+  end
+
+  V --> M
+  V --> R
+  V --> T
+  V --> P
+
+  subgraph views["Generated views"]
+    S["Filtered search catalog"]
+    A["Provider adapters"]
+    C["Content-bound compiled bundle"]
+  end
+
+  M --> S
+  R --> S
+  P --> S
+  M --> C
+  R --> C
+  T --> C
+  P --> C
+  C --> A
+  C --> L["Activation lifecycle"]
+  S --> L
+  A --> L
+  P --> L
+
+  L --> E["Redacted telemetry"]
+  E --> Q["Evaluation results"]
+  Q --> G["Promotion and rollback policy"]
+  G -. "govern next release" .-> R
+
+  classDef sourceNode fill:#78909C,stroke:#607D8B,color:#FFFFFF;
+  classDef generated fill:#20808D,stroke:#187078,color:#FFFFFF;
+  classDef runtime fill:#E08A3C,stroke:#C47530,color:#13343B;
+  classDef evidence fill:#2E7D32,stroke:#2E7D32,color:#FFFFFF;
+
+  class M,R,T,P,V sourceNode;
+  class S,A,C generated;
+  class L runtime;
+  class E,Q,G evidence;

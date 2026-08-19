@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:skillref:schema:telemetry-event:0.1",
+  "title": "Privacy-bounded telemetry event",
+  "description": "Structured routing and outcome evidence without raw prompt, secret, argument, or result content.",
+  "type": "object",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "required": ["privacy"],
+        "properties": {
+          "privacy": {
+            "required": ["classification"],
+            "properties": {
+              "classification": { "enum": ["public", "internal", "restricted"] }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "privacy": {
+            "required": ["redactionPolicyVersion", "redactionMethod"],
+            "properties": {
+              "redacted": { "const": true }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "required": [
+    "schemaVersion",
+    "eventId",
+    "timestamp",
+    "eventType",
+    "runId",
+    "architectureLevel",
+    "outcome",
+    "privacy"
+  ],
+  "properties": {
+    "$schema": { "const": "urn:skillref:schema:telemetry-event:0.1" },
+    "schemaVersion": { "const": "0.1" },
+    "eventId": { "$ref": "#/$defs/opaqueId" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "eventType": {
+      "enum": [
+        "routing.completed",
+        "policy.denied",
+        "inspection.completed",
+        "activation.started",
+        "activation.completed",
+        "activation.failed",
+        "resource.loaded",
+        "execution.completed",
+        "verification.completed",
+        "rollback.completed",
+        "evaluation.completed"
+      ]
+    },
+    "runId": { "$ref": "#/$defs/opaqueId" },
+    "sessionIdHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "architectureLevel": { "type": "integer", "minimum": 0, "maximum": 3 },
+    "profileId": { "$ref": "#/$defs/objectId" },
+    "skill": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "manifestDigest"],
+      "properties": {
+        "id": { "$ref": "#/$defs/objectId" },
+        "version": { "$ref": "#/$defs/semver" },
+        "manifestDigest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "eligibleCount": { "type": "integer", "minimum": 0 },
+        "visibleCount": { "type": "integer", "minimum": 0 },
+        "retrievableCount": { "type": "integer", "minimum": 0 },
+        "candidates": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/candidate" }
+        },
+        "ambiguity": { "enum": ["none", "clarified", "declined", "unresolved"] }
+      }
+    },
+    "outcome": { "$ref": "#/$defs/outcome" },
+    "labels": {
+      "type": "object",
+      "description": "Optional low-cardinality dimensions. Keys and values are closed to prevent raw content from being smuggled into labels.",
+      "additionalProperties": false,
+      "properties": {
+        "source": {
+          "enum": ["synthetic-fixture", "controlled-evaluation", "operational"]
+        },
+        "environment": { "enum": ["local", "ci", "staging", "production"] },
+        "runMode": { "enum": ["baseline", "candidate", "shadow", "active"] },
+        "riskClass": { "enum": ["low", "moderate", "high", "critical"] }
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "dataMinimized",
+        "rawContentCaptured",
+        "redacted",
+        "storageScope"
+      ],
+      "properties": {
+        "classification": { "enum": ["synthetic", "public", "internal", "restricted"] },
+        "dataMinimized": { "const": true },
+        "redacted": { "type": "boolean" },
+        "rawContentCaptured": { "const": false },
+        "redactionPolicyVersion": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,49}$"
+        },
+        "redactionMethod": {
+          "enum": ["allowlist", "aggregate-only", "hash-and-drop"]
+        },
+        "storageScope": { "enum": ["local", "approved-private"] }
+      }
+    }
+  },
+  "$defs": {
+    "opaqueId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{7,127}$"
+    },
+    "objectId": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+      "maxLength": 128
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)(?:-[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?(?:\\+[0-9A-Za-z-]+(?:\\.[0-9A-Za-z-]+)*)?$"
+    },
+    "digest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "value"],
+      "properties": {
+        "algorithm": { "const": "sha256" },
+        "value": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["skillId", "disposition", "reasonCodes"],
+      "properties": {
+        "skillId": { "$ref": "#/$defs/objectId" },
+        "rank": { "type": "integer", "minimum": 1 },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "disposition": {
+          "enum": ["eligible", "filtered", "retrieved", "inspected", "selected", "rejected"]
+        },
+        "reasonCodes": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_.-]*$",
+            "maxLength": 100
+          }
+        }
+      }
+    },
+    "tokenMetrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "metadata": { "type": "integer", "minimum": 0 },
+        "instructions": { "type": "integer", "minimum": 0 },
+        "conditionalResources": { "type": "integer", "minimum": 0 },
+        "completion": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "verified", "corrections", "latencyMs"],
+      "properties": {
+        "status": { "enum": ["PASS", "FAIL", "ERROR", "INCOMPLETE", "DENIED"] },
+        "verified": { "type": "boolean" },
+        "corrections": { "type": "integer", "minimum": 0 },
+        "latencyMs": { "type": "number", "minimum": 0 },
+        "tokens": { "$ref": "#/$defs/tokenMetrics" },
+        "failureCode": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "maxLength": 100
+        }
+      }
+    }
+  }
+}

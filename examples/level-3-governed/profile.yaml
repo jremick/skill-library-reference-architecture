@@ -1,0 +1,31 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: local-safe
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants:
+  - id: allow-governed-analysis
+    selector:
+      skillIds:
+        - table-analysis
+    permissions:
+      capabilities:
+        - content:read
+        - table:analyze
+      resourceScopes:
+        - task:provided-content
+      resourceRoles:
+        - instructions
+        - reference
+      exposureModes:
+        - router-retrievable
+    reason: Only digest-verified, read-only analysis is eligible in this profile.
+denials:
+  - id: deny-governed-mutation
+    selector:
+      skillIds:
+        - deployment-runner
+    reason: Mutation remains excluded from the local-safe governed profile.

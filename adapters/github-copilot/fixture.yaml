@@ -1,0 +1,12 @@
+schemaVersion: "0.1"
+adapter: github-copilot
+status: illustrative
+checkedOn: "2026-08-20"
+portableSource: ../../examples/level-1-static-router/skills/code-review
+hostPlacement: .github/skills/code-review
+entrypoint: SKILL.md
+vendorFields: {}
+assumptions:
+  - The selected Copilot surface supports project agent skills.
+  - Eligibility was decided before the directory became host-visible.
+  - Duplicate skill names do not exist in higher-precedence locations.

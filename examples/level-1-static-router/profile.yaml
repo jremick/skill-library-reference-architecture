@@ -1,0 +1,28 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: local-safe
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants:
+  - id: allow-reviewed-router-leaves
+    selector:
+      skillIds:
+        - table-analysis
+        - code-review
+    permissions:
+      capabilities:
+        - content:read
+        - table:analyze
+        - code:review
+      resourceScopes:
+        - task:provided-content
+      resourceRoles:
+        - instructions
+        - reference
+      exposureModes:
+        - router-retrievable
+    reason: The router may expose only the two reviewed read-only leaves.
+denials: []

@@ -1,0 +1,35 @@
+flowchart TB
+  accTitle: Incremental migration path
+  accDescr: Each architecture level remains independently runnable. A measured problem motivates the next level, which first runs in shadow mode and must pass configured gates. Failure returns to the prior known-good bundle.
+
+  L0["Level 0<br/>Flat and simple"] --> P1["Measure routing or context problem"]
+  P1 --> S1["Shadow Level 1 compiler"]
+  S1 --> G1{"Gates pass?"}
+  G1 -- "Yes" --> L1["Level 1<br/>Static routers"]
+  G1 -- "No" --> L0
+
+  L1 --> P2["Measure overlap or catalog-change problem"]
+  P2 --> S2["Shadow Level 2 retrieval"]
+  S2 --> G2{"Gates pass?"}
+  G2 -- "Yes" --> L2["Level 2<br/>Filtered retrieval"]
+  G2 -- "No" --> L1
+
+  L2 --> P3["Measure policy or lifecycle problem"]
+  P3 --> S3["Shadow Level 3 controls"]
+  S3 --> G3{"Gates pass?"}
+  G3 -- "Yes" --> L3["Level 3<br/>Governed retrieval service"]
+  G3 -- "No" --> L2
+
+  L3 -. "restore prior bundle" .-> L2
+  L2 -. "restore prior bundle" .-> L1
+  L1 -. "restore prior bundle" .-> L0
+
+  classDef level fill:#20808D,stroke:#187078,color:#FFFFFF;
+  classDef measure fill:#78909C,stroke:#607D8B,color:#FFFFFF;
+  classDef shadow fill:#E08A3C,stroke:#C47530,color:#13343B;
+  classDef gate fill:#FFF3E0,stroke:#C47530,color:#13343B;
+
+  class L0,L1,L2,L3 level;
+  class P1,P2,P3 measure;
+  class S1,S2,S3 shadow;
+  class G1,G2,G3 gate;

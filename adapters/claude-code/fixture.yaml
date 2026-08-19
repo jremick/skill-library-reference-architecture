@@ -1,0 +1,13 @@
+schemaVersion: "0.1"
+adapter: claude-code
+status: illustrative
+checkedOn: "2026-08-20"
+portableSource: ../../examples/level-2-retrieval/skills/table-analysis
+hostPlacement: .claude/skills/table-analysis
+entrypoint: SKILL.md
+vendorFields:
+  invocationMode: model-or-user
+assumptions:
+  - Project setting sources are enabled for the target session.
+  - Eligibility was decided before the skill was placed or enabled.
+  - Optional vendor fields are validated against the target version.

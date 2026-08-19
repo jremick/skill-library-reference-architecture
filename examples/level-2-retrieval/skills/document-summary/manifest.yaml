@@ -1,0 +1,42 @@
+$schema: urn:skillref:schema:skill-manifest:0.1
+schemaVersion: "0.1"
+id: document-summary
+version: 1.0.0
+name: Document summary
+description: Summarize supplied documents while preserving source boundaries, qualifications, and unknowns.
+license: Apache-2.0
+domains:
+  - documents
+triggers:
+  include:
+    - Condense a supplied memo, brief, or report.
+  exclude:
+    - Do not use to verify claims against external sources.
+risk:
+  level: low
+  sideEffects: false
+  rationale: Reads supplied content and produces a text summary.
+permissions:
+  capabilities:
+    - content:read
+  resourceScopes:
+    - task:provided-content
+resources:
+  entrypoint: SKILL.md
+  items: []
+conflicts:
+  hard: []
+  supersedes: []
+  companions: []
+evaluation:
+  suiteRefs:
+    - evals/heldout/cases.json
+compatibility:
+  spec: agent-skills
+  runtimes:
+    - portable-core
+  notes: Retrieval metadata remains off-prompt until the catalog returns it.
+provenance:
+  source: synthetic:document-summary
+  maintainers:
+    - reference-architecture-maintainers

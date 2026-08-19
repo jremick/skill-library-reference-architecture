@@ -1,0 +1,49 @@
+$schema: urn:skillref:schema:telemetry-event:0.1
+schemaVersion: "0.1"
+eventId: event:synthetic:0001
+timestamp: "2026-01-15T10:00:00Z"
+eventType: activation.completed
+runId: run:synthetic:0001
+architectureLevel: 3
+profileId: local-safe
+skill:
+  id: table-analysis
+  version: 1.0.0
+  manifestDigest:
+    algorithm: sha256
+    value: 8c1ef91d63955912c97375518316c5c9d99f229d6c868f595e100088b0ae800b
+routing:
+  eligibleCount: 1
+  visibleCount: 0
+  retrievableCount: 1
+  candidates:
+    - skillId: table-analysis
+      rank: 1
+      score: 0.92
+      disposition: selected
+      reasonCodes:
+        - policy.allowed
+        - routing.top-ranked
+  ambiguity: none
+outcome:
+  status: PASS
+  verified: true
+  corrections: 0
+  latencyMs: 18.4
+  tokens:
+    metadata: 36
+    instructions: 210
+    conditionalResources: 0
+    completion: 120
+labels:
+  source: synthetic-fixture
+  environment: local
+  runMode: candidate
+  riskClass: low
+privacy:
+  classification: synthetic
+  dataMinimized: true
+  redacted: true
+  rawContentCaptured: false
+  redactionPolicyVersion: "1.0"
+  storageScope: local

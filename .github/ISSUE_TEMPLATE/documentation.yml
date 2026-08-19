@@ -1,0 +1,25 @@
+name: Documentation issue
+description: Report a gap, ambiguity, broken link, or misleading example.
+title: "docs: "
+labels:
+  - documentation
+body:
+  - type: textarea
+    id: location
+    attributes:
+      label: Location
+      description: Link to the page or name the section.
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Explain what a reader could misunderstand or cannot complete.
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement
+      description: Optional public-safe wording or example.

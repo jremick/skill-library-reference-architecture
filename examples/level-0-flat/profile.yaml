@@ -1,0 +1,25 @@
+$schema: urn:skillref:schema:profile:0.1
+schemaVersion: "0.1"
+id: local-safe
+version: 1.0.0
+defaultDecision: deny
+resolution:
+  denialsOverrideGrants: true
+  unknownValues: deny
+grants:
+  - id: allow-low-risk-flat-skills
+    selector:
+      skillIds:
+        - document-summary
+        - travel-checklist
+    permissions:
+      capabilities:
+        - content:read
+      resourceScopes:
+        - task:provided-content
+      resourceRoles:
+        - instructions
+      exposureModes:
+        - prompt-visible
+    reason: The Level 0 baseline exposes only two reviewed read-only skills.
+denials: []
