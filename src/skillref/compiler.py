@@ -36,11 +36,16 @@ _CANONICAL_SCHEMA_URNS = {
 }
 
 
-def _validate_canonical_document(document: dict[str, Any], kind: str) -> None:
+def _validate_canonical_document(
+    document: dict[str, Any], kind: str, *, required: bool = False
+) -> None:
     """Validate canonical compiler inputs without echoing input values."""
 
     expected_urn = _CANONICAL_SCHEMA_URNS[kind]
-    if document.get("$schema") != expected_urn and document.get("schemaVersion") != "0.1":
+    identified = document.get("$schema") == expected_urn or document.get("schemaVersion") == "0.1"
+    if required and not identified:
+        raise ValueError(f"canonical {kind} schema identity is required")
+    if not identified:
         return
     schema_path = Path(__file__).resolve().parents[2] / "schemas" / _CANONICAL_SCHEMA_FILES[kind]
     if not schema_path.is_file():
@@ -521,17 +526,17 @@ def compile_bundle(
     assert registry_record is not None
     registry_path, registry = registry_record
     _reject_symlink_path(registry_path, root_path, label="registry path")
-    _validate_canonical_document(registry, "registry")
+    _validate_canonical_document(registry, "registry", required=True)
     manifests, content_paths, canonical_registry = _registry_manifests(
         root_path, registry_path, registry
     )
     for _, manifest, _, _ in manifests.values():
-        _validate_canonical_document(manifest, "skill-manifest")
+        _validate_canonical_document(manifest, "skill-manifest", required=True)
     router_record = _single_record(records, "router-map", required=False)
     if router_record is not None:
         router_path, router = router_record
         _reject_symlink_path(router_path, root_path, label="router map path")
-        _validate_canonical_document(router, "router-map")
+        _validate_canonical_document(router, "router-map", required=True)
         if canonical_registry:
             if not (
                 router.get("schemaVersion") == "0.1"
@@ -548,7 +553,7 @@ def compile_bundle(
         router = None
     profile_path, profile = _find_profile(records, profile_id)
     _reject_symlink_path(profile_path, root_path, label="profile path")
-    _validate_canonical_document(profile, "profile")
+    _validate_canonical_document(profile, "profile", required=True)
 
     installed_candidates = {
         skill_id

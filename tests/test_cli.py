@@ -107,12 +107,24 @@ class CliTests(unittest.TestCase):
         self.assertEqual("skillref.command-report.v0alpha1", report["report_format"])
 
     def test_compile_rejects_malformed_canonical_profiles_without_overwrite(self) -> None:
+        def downgrade_identity(profile: dict[str, object]) -> None:
+            profile["$schema"] = "profile.json"
+            profile["schemaVersion"] = "0.2"
+            profile.pop("denials")
+
+        def remove_identity(profile: dict[str, object]) -> None:
+            profile.pop("$schema")
+            profile.pop("schemaVersion")
+            profile.pop("denials")
+
         mutations = {
             "missing-denials": lambda profile: profile.pop("denials"),
             "null-denials": lambda profile: profile.__setitem__("denials", None),
             "object-denials": lambda profile: profile.__setitem__("denials", {}),
             "object-grants": lambda profile: profile.__setitem__("grants", {}),
             "allow-default": lambda profile: profile.__setitem__("defaultDecision", "allow"),
+            "downgraded-identity": downgrade_identity,
+            "missing-identity": remove_identity,
         }
         for name, mutate in mutations.items():
             with self.subTest(name=name), tempfile.TemporaryDirectory() as temporary:
@@ -136,7 +148,10 @@ class CliTests(unittest.TestCase):
 
                 self.assertEqual(2, exit_code)
                 self.assertFalse(report["ok"])
-                self.assertIn("failed schema validation", str(report["error"]))
+                self.assertRegex(
+                    str(report["error"]),
+                    "failed schema validation|schema identity is required|unknown profile_id",
+                )
                 self.assertEqual("preserve-existing-output", output.read_text(encoding="utf-8"))
 
 
