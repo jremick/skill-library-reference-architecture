@@ -116,6 +116,25 @@ class RepositorySurfaceTests(unittest.TestCase):
             write_bundle(first, output)
             self.assertTrue(output.is_file())
 
+    def test_readme_teaches_level_1_and_level_2_agent_adoption_paths(self) -> None:
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        required_targets = (
+            "docs/diagrams/rendered/level-1-static-routing-in-practice.svg",
+            "docs/diagrams/rendered/level-2-filtered-retrieval-in-practice.svg",
+            "examples/level-1-static-router/skills/table-analysis/SKILL.md",
+            "examples/level-1-static-router/skills/code-review/SKILL.md",
+            "examples/level-2-retrieval/skills/deployment-review/SKILL.md",
+            "examples/level-2-retrieval/skills/deployment-runner/SKILL.md",
+            "docs/migration.md",
+            "spec/README.md",
+            "adapters/",
+        )
+        for target in required_targets:
+            with self.subTest(target=target):
+                self.assertIn(target, readme)
+        self.assertIn("Quick start: use this with your AI assistant", readme)
+        self.assertIn("Do not modify my system until I approve it.", readme)
+
 
 if __name__ == "__main__":
     unittest.main()

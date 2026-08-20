@@ -18,6 +18,16 @@
       "render_sha256": "9fd73ab621c9548c99e4174df07b624e7e624f4fa09a921ba9e24cfd70ec2499"
     },
     {
+      "name": "level-1-static-routing-in-practice",
+      "source_sha256": "f19926802b9934f97371d24c19a8def59d5c08c02903cbe962c9ac82e326fb95",
+      "render_sha256": "3cce3e566a0a8c74843a9ba11c78b2735493f5a48fde258a1bec193282dddcb2"
+    },
+    {
+      "name": "level-2-filtered-retrieval-in-practice",
+      "source_sha256": "86dc0aac7cb46d02f6a7de55f5f2751a8213e32a3561f7c44955302fa83fa5d3",
+      "render_sha256": "aa3c173e7721a1aabaa23cc4774e0f30e8b898cddd9b6170c843a2987b8d48c1"
+    },
+    {
       "name": "migration-path",
       "source_sha256": "9c68bdc559ad93c37a4d5f6a7c702171c587648501d2829acb2c19356e4c0da3",
       "render_sha256": "8ed47ca453f8a6fe634f6a7bd047542583b2b0d6fcc65630667e552ec0ee0eeb"

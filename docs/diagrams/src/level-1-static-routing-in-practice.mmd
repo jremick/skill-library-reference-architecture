@@ -1,0 +1,39 @@
+flowchart TB
+  accTitle: Level 1 static routing in practice
+  accDescr: Manifests, a registry, and a profile compile into a small prompt-visible set of domain routers. For each request, deterministic exact aliases and keyword rules select one off-prompt leaf skill. The runtime inspects and activates that exact skill, then loads a named resource only when its condition is met. Ambiguous requests stop for clarification.
+
+  subgraph build["Compile the routing surface"]
+    direction LR
+    S["<b>Skill sources</b><br/>Manifests · registry · profile"]
+    C["<b>Deterministic compiler</b><br/>Validate IDs · apply policy<br/>bind source digests"]
+    R["<b>Prompt-visible routers</b><br/>Engineering · Data<br/>small stable surface"]
+    S --> C --> R
+  end
+
+  subgraph request["Route one request"]
+    direction LR
+    Q["<b>User request</b><br/>Analyze this table<br/>and chart it"]
+    M["<b>Static match</b><br/>Exact alias · keywords<br/>ambiguity → clarify"]
+    L["<b>Select and inspect</b><br/>Off-prompt table-analysis<br/>exact manifest and version"]
+    A["<b>Activate selected skill</b><br/>Load chart-guidance.md only<br/>because the request needs it"]
+
+    Q --> M --> L --> A
+    M -.-> H["<b>Stop and clarify</b><br/>No guessed activation"]
+  end
+
+  build --> request
+
+  classDef source fill:#ECEEF0,stroke:#607D8B,color:#13343B,stroke-width:2px;
+  classDef agent fill:#20808D,stroke:#187078,color:#FFFFFF,stroke-width:2px;
+  classDef policy fill:#FFF3E0,stroke:#C47530,color:#13343B,stroke-width:2px;
+  classDef selected fill:#E8F4F6,stroke:#187078,color:#13343B,stroke-width:2px;
+  classDef stop fill:#FFF3E0,stroke:#C47530,color:#13343B,stroke-width:2px;
+
+  class S source;
+  class C,R,M agent;
+  class Q policy;
+  class L,A selected;
+  class H stop;
+
+  style build fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px
+  style request fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px

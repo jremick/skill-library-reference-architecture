@@ -1,0 +1,41 @@
+flowchart TB
+  accTitle: Level 2 filtered retrieval in practice
+  accDescr: Registry records are filtered by profile and permission policy before search or model ranking. A denied deployment runner never enters the candidate set. A thin prompt-visible retrieval interface searches the eligible off-prompt catalog, ranks a small candidate set, inspects the deployment review skill, and activates its exact version for the request.
+
+  subgraph catalog["Build the eligible off-prompt catalog"]
+    direction LR
+    R["<b>Registered skills</b><br/>Review · runner<br/>summary · analysis"]
+    P["<b>Deterministic filter</b><br/>Profile · permissions<br/>denials override grants"]
+    E["<b>Eligible catalog</b><br/>Exact records remain<br/>off prompt"]
+    D["<b>Denied before search</b><br/>deployment-runner<br/>absent from candidates"]
+
+    R --> P --> E
+    P --> D
+  end
+
+  subgraph request["Retrieve for one request"]
+    direction LR
+    Q["<b>User request</b><br/>Review this deployment plan<br/>via the thin retrieval interface"]
+    S["<b>Search and rank</b><br/>Exact · keyword · semantic<br/>eligible candidates only"]
+    I["<b>Inspect and activate</b><br/>deployment-review<br/>pinned exact version"]
+
+    Q --> S --> I
+  end
+
+  catalog --> request
+
+  classDef source fill:#ECEEF0,stroke:#607D8B,color:#13343B,stroke-width:2px;
+  classDef agent fill:#20808D,stroke:#187078,color:#FFFFFF,stroke-width:2px;
+  classDef policy fill:#FFF3E0,stroke:#C47530,color:#13343B,stroke-width:2px;
+  classDef selected fill:#E8F4F6,stroke:#187078,color:#13343B,stroke-width:2px;
+  classDef denied fill:#C62828,stroke:#9F1D1D,color:#FFFFFF,stroke-width:2px;
+
+  class R source;
+  class P policy;
+  class E,I selected;
+  class Q policy;
+  class S agent;
+  class D denied;
+
+  style catalog fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px
+  style request fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px
