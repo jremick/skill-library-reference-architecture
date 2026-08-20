@@ -1,0 +1,8 @@
+{
+  "format": "skillref.asset-render-manifest.v0alpha1",
+  "renderer": "rsvg-convert 2.62.3",
+  "source": "assets/social-preview.svg",
+  "render": "assets/social-preview.png",
+  "source_sha256": "8c5ea74368e715ed3139befe2c739bf5145d4f82b9a72c4ee1f72bc7bcbe4e62",
+  "render_sha256": "bfb4a65b71eb5b40f59a7598f42738bba5d4919f921144d957d2e7d85742aa07"
+}

@@ -1,36 +1,43 @@
 flowchart TB
   accTitle: Context-loading lifecycle
-  accDescr: A skill moves from installed material through validation, policy eligibility, visibility or retrieval, inspection, activation, conditional resource loading, execution, verification, and deactivation. Denials and failures remain explicit.
+  accDescr: Four compact stages separate inventory and policy, exposure, runtime disclosure, and outcome. Cached or installed material is not automatically visible; inspection is not activation; named resources load only when conditions are met; and verification remains distinct from execution.
 
-  A0["Cached bytes"] --> A["Installed package"]
-  A --> B["Registered manifest digest"]
-  B --> C{"Policy eligible?"}
-  C -- "No" --> X["Denied or quarantined"]
-  C -- "Yes" --> D{"Exposure path"}
-  D --> E["Prompt-visible metadata"]
-  D --> F["Router-retrievable record"]
-  E --> G["Retrieved or selected candidate"]
-  F --> G
-  G --> H["Inspected"]
-  H --> I{"Conflicts resolved?"}
-  I -- "No" --> Y["Stop or review"]
-  I -- "Yes" --> J["Version pinned and activated"]
-  J --> K{"Resource condition met?"}
-  K -- "Yes" --> L["Named resource loaded"]
-  K -- "No" --> M["Execute instructions"]
-  L --> M
-  M --> N{"Outcome verified?"}
-  N -- "Yes" --> O["Verified and deactivated"]
-  N -- "No" --> P["Failure or incomplete evidence"]
-  P -. "bounded retry" .-> G
+  subgraph stages["Progressive disclosure"]
+    direction LR
+    I["<b>1 · Inventory and policy</b><br/>Cached → Installed → Registered → Eligible"]
+    E["<b>2 · Exposure</b><br/>Prompt-visible <i>or</i> Router-retrievable<br/>→ Retrieved candidate"]
+    R["<b>3 · Runtime disclosure</b><br/>Inspect → Resolve → Pin and activate<br/>→ Load named resources conditionally"]
+    O["<b>4 · Outcome</b><br/>Execute → Evaluate → Deactivate"]
 
-  classDef system fill:#78909C,stroke:#607D8B,color:#FFFFFF;
-  classDef automated fill:#20808D,stroke:#187078,color:#FFFFFF;
-  classDef decision fill:#E8F4F6,stroke:#187078,color:#13343B;
-  classDef success fill:#2E7D32,stroke:#2E7D32,color:#FFFFFF;
-  classDef stop fill:#C62828,stroke:#C62828,color:#FFFFFF;
+    I --> E --> R --> O
+  end
 
-  class A0,A,B,E,F,G,H,J,L,M system;
-  class C,D,I,K,N decision;
-  class O success;
-  class X,Y,P stop;
+  subgraph boundaries["Boundary states remain explicit"]
+    direction LR
+    X["Denied or quarantined<br/>before retrieval"]
+    Y["Stop or review<br/>before activation"]
+    S["Verified and deactivated"]
+    P["Failure or incomplete evidence<br/>bounded retry only"]
+
+    X ~~~ Y ~~~ S ~~~ P
+  end
+
+  stages -.-> boundaries
+
+  classDef inventory fill:#78909C,stroke:#607D8B,color:#FFFFFF,stroke-width:2px;
+  classDef exposure fill:#20808D,stroke:#187078,color:#FFFFFF,stroke-width:2px;
+  classDef runtime fill:#20808D,stroke:#187078,color:#FFFFFF,stroke-width:2px;
+  classDef outcome fill:#2E7D32,stroke:#2E7D32,color:#FFFFFF,stroke-width:2px;
+  classDef stop fill:#C62828,stroke:#C62828,color:#FFFFFF,stroke-width:2px;
+  classDef review fill:#FFF3E0,stroke:#C47530,color:#13343B,stroke-width:2px;
+
+  class I inventory;
+  class E exposure;
+  class R runtime;
+  class S outcome;
+  class O review;
+  class X,P stop;
+  class Y review;
+
+  style stages fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px
+  style boundaries fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px

@@ -1,29 +1,29 @@
-flowchart LR
-  accTitle: Four architecture levels
-  accDescr: The architecture grows from a flat skill set to static domain routers, filtered catalog retrieval, and a fully governed retrieval-served platform. Configured evidence gates separate every level.
+flowchart TB
+  accTitle: Four evidence-led architecture levels
+  accDescr: Start with a flat library, then add static routing, filtered retrieval, and governed runtime controls only when measured local pressure justifies the next level. Every promotion preserves a rollback path.
 
-  L0["Level 0<br/>Flat eligible set<br/>Progressive resources"]
-  G01{"Local evidence gate"}
-  L1["Level 1<br/>Static domain routers<br/>Deterministic compiler"]
-  G12{"Local evidence gate"}
-  L2["Level 2<br/>Pre-filtered catalog<br/>Search and inspect"]
-  G23{"Local evidence gate"}
-  L3["Level 3<br/>Policy and telemetry<br/>Evaluation and lifecycle"]
+  E["<b>Promotion evidence</b><br/>Task outcomes · routing quality · privacy<br/>Latency · cost · drift"]
+  R["<b>Safety boundary</b><br/>Shadow the candidate<br/>Keep the last known-good level runnable"]
 
-  L0 --> G01 --> L1 --> G12 --> L2 --> G23 --> L3
-  L3 -. "rollback" .-> L2
-  L2 -. "rollback" .-> L1
-  L1 -. "rollback" .-> L0
+  subgraph levels["Choose the smallest level that clears the measured constraint"]
+    direction LR
+    L0["<b>Level 0 · Flat</b><br/>Small, simple library<br/>Progressive resources"]
+    L1["<b>Level 1 · Route</b><br/>Stable task domains<br/>Static routing compiler"]
+    L2["<b>Level 2 · Retrieve</b><br/>Catalog or overlap pressure<br/>Filter, search, inspect"]
+    L3["<b>Level 3 · Govern</b><br/>Dynamic or higher-risk use<br/>Policy, telemetry, lifecycle"]
 
-  E["Evidence: outcomes, routing, privacy,<br/>latency, cost, drift, rollback"]
-  E -.-> G01
-  E -.-> G12
-  E -.-> G23
+    L0 --> L1 --> L2 --> L3
+  end
 
-  classDef level fill:#20808D,stroke:#187078,color:#FFFFFF;
-  classDef gate fill:#FFF3E0,stroke:#C47530,color:#13343B;
-  classDef evidence fill:#78909C,stroke:#607D8B,color:#FFFFFF;
+  E -.-> levels
+  levels -.-> R
+
+  classDef level fill:#20808D,stroke:#187078,color:#FFFFFF,stroke-width:2px;
+  classDef evidence fill:#E8F4F6,stroke:#187078,color:#13343B,stroke-width:2px;
+  classDef rollback fill:#FFF3E0,stroke:#C47530,color:#13343B,stroke-width:2px;
 
   class L0,L1,L2,L3 level;
-  class G01,G12,G23 gate;
   class E evidence;
+  class R rollback;
+
+  style levels fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px

@@ -11,7 +11,8 @@ from skillref import compile_bundle
 from skillref.compiler import write_bundle
 from tests.support import ROOT
 
-MARKDOWN_LINK = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
+MARKDOWN_TARGET = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+HTML_IMAGE_TARGET = re.compile(r'<img\b[^>]*\bsrc="([^"]+)"')
 
 
 class RepositorySurfaceTests(unittest.TestCase):
@@ -43,7 +44,8 @@ class RepositorySurfaceTests(unittest.TestCase):
             if any(part.startswith(".") or part in {"build", "dist"} for part in document.parts):
                 continue
             text = document.read_text(encoding="utf-8")
-            for raw_target in MARKDOWN_LINK.findall(text):
+            targets = MARKDOWN_TARGET.findall(text) + HTML_IMAGE_TARGET.findall(text)
+            for raw_target in targets:
                 target = raw_target.strip().split(maxsplit=1)[0].strip("<>")
                 if not target or target.startswith(("#", "http://", "https://", "mailto:")):
                     continue
@@ -71,6 +73,9 @@ class RepositorySurfaceTests(unittest.TestCase):
             (ROOT / "docs" / "diagrams" / "render-manifest.json").read_text(encoding="utf-8")
         )
         self.assertEqual("skillref.diagram-render-manifest.v0alpha1", manifest["format"])
+        source_names = {path.stem for path in (ROOT / "docs" / "diagrams" / "src").glob("*.mmd")}
+        manifest_names = {diagram["name"] for diagram in manifest["diagrams"]}
+        self.assertEqual(source_names, manifest_names)
         for diagram in manifest["diagrams"]:
             with self.subTest(diagram=diagram["name"]):
                 source = ROOT / "docs" / "diagrams" / "src" / f"{diagram['name']}.mmd"
@@ -81,6 +86,21 @@ class RepositorySurfaceTests(unittest.TestCase):
                 self.assertEqual(
                     diagram["render_sha256"], hashlib.sha256(render.read_bytes()).hexdigest()
                 )
+
+    def test_social_preview_is_content_bound_and_1280_by_640(self) -> None:
+        manifest = json.loads(
+            (ROOT / "assets" / "render-manifest.json").read_text(encoding="utf-8")
+        )
+        self.assertEqual("skillref.asset-render-manifest.v0alpha1", manifest["format"])
+        source = ROOT / manifest["source"]
+        render = ROOT / manifest["render"]
+        self.assertEqual(manifest["source_sha256"], hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertEqual(manifest["render_sha256"], hashlib.sha256(render.read_bytes()).hexdigest())
+        png = render.read_bytes()
+        self.assertEqual(b"\x89PNG\r\n\x1a\n", png[:8])
+        width = int.from_bytes(png[16:20], "big")
+        height = int.from_bytes(png[20:24], "big")
+        self.assertEqual((1280, 640), (width, height))
 
     def test_readme_level_2_compile_example_is_reproducible(self) -> None:
         example = ROOT / "examples" / "level-2-retrieval"

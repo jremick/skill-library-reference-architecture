@@ -10,6 +10,10 @@ without loading every capability into every model context.
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 [![Status: public alpha](https://img.shields.io/badge/status-public%20alpha-yellow.svg)](#current-status)
 
+<p align="center">
+  <img src="docs/diagrams/rendered/architecture-levels.svg" alt="Four evidence-led architecture levels from flat skills through routing, retrieval, and governed retrieval." width="880"/>
+</p>
+
 ## What this is
 
 This repository provides contracts, examples, diagrams, and a small reference
@@ -27,6 +31,14 @@ configured evidence—context share, routing quality, permission complexity,
 latency, drift, task outcomes, and rollback readiness—not a universal number of
 skills.
 
+The core value is separating what exists from what is visible, retrievable,
+inspected, activated, and measured. See the
+progression below for the public-facing story.
+
+<p align="center">
+  <img src="docs/diagrams/rendered/why-this-architecture.svg" alt="A flat skill library stays simple until local evidence justifies governed retrieval, whose intended value is selective context, an explicit policy boundary, observable routing, and reversible migration." width="880"/>
+</p>
+
 The levels and contracts describe the target architecture for a conforming
 implementation. They do not imply that the alpha `skillref` CLI implements a
 host runtime. The current CLI validates repository documents, compiles a
@@ -40,12 +52,9 @@ or adapter evidence.
 
 The reference model keeps these states distinct:
 
-```text
-installed/cache -> registered -> policy-eligible
-                  -> prompt-visible OR router-retrievable
-                  -> retrieved candidate -> inspected -> activated
-                  -> conditional resource loaded -> executed -> verified
-```
+<p align="center">
+  <img src="docs/diagrams/rendered/context-loading-lifecycle.svg" alt="Context-loading lifecycle separating inventory and policy, exposure and selection, runtime activation, conditional resources, execution, verification, and failure evidence." width="880"/>
+</p>
 
 Installed does not mean visible. Inspected does not mean activated. Activating a
 skill does not imply that every bundled reference, script, or asset was loaded

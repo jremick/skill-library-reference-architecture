@@ -1,0 +1,35 @@
+flowchart TB
+  accTitle: Why progressive skill architecture matters
+  accDescr: A flat library exposes every eligible skill at once. When measured local pressure appears, a progressive library can keep exact records off prompt, apply deterministic policy before search, inspect the selected candidate, activate only the pinned version, load named resources conditionally, and evaluate outcomes. The intended value is selective context, explicit authority, observable routing, and reversible change.
+
+  V["<b>Intended value</b><br/>Selective context · explicit policy boundary · observable routing · reversible migration"]
+
+  subgraph choice["Add control only when evidence justifies it"]
+    direction LR
+    A["<b>Flat library</b><br/>Eligible skills<br/>All visible at once"]
+    P["<b>Measured pressure</b><br/>Context · overlap<br/>permissions · routing"]
+    D{"Local evidence<br/>justifies more control?"}
+    Q["<b>No · Keep it simple</b><br/>Avoid unearned<br/>architecture cost"]
+    G["<b>Yes · Governed retrieval</b><br/>Register and filter → Search and inspect<br/>Pin and activate → Disclose conditionally<br/>Execute and evaluate"]
+
+    A --> P --> D
+    D --> Q
+    D --> G
+  end
+
+
+  choice --> V
+
+  classDef flat fill:#78909C,stroke:#607D8B,color:#FFFFFF,stroke-width:2px;
+  classDef pressure fill:#FFF3E0,stroke:#C47530,color:#13343B,stroke-width:2px;
+  classDef decision fill:#E8F4F6,stroke:#187078,color:#13343B,stroke-width:2px;
+  classDef governed fill:#20808D,stroke:#187078,color:#FFFFFF,stroke-width:2px;
+  classDef value fill:#E8F4F6,stroke:#187078,color:#13343B,stroke-width:2px;
+
+  class A,Q flat;
+  class P pressure;
+  class D decision;
+  class G governed;
+  class V value;
+
+  style choice fill:#FFFFFF,stroke:#CBD5DA,stroke-width:1px
